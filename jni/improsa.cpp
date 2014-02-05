@@ -31,8 +31,9 @@ extern "C"
       env->NewStringUTF(""));
     for (int i = 0; i < numFilters; i++)
     {
-      const char *name = filters[i]->getName();
-      env->SetObjectArrayElement(list, i, env->NewStringUTF(name));
+      jstring name = env->NewStringUTF(filters[i]->getName());
+      env->SetObjectArrayElement(list, i, name);
+      env->DeleteLocalRef(name);
     }
     return list;
   }
@@ -50,8 +51,10 @@ extern "C"
     vsprintf(msg, format, args);
 
     // Send message to log and GUI
+    jstring jmsg = m_env->NewStringUTF(msg);
     __android_log_print(ANDROID_LOG_DEBUG, "improsa", "%s", msg);
-    m_env->CallVoidMethod(m_obj, m_updateStatus, m_env->NewStringUTF(msg));
+    m_env->CallVoidMethod(m_obj, m_updateStatus, jmsg);
+    m_env->DeleteLocalRef(jmsg);
 
     free(msg);
 
