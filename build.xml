@@ -90,13 +90,21 @@
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
     <target name="-pre-build">
+        <exec
+            executable="./stringify_kernels.sh"
+            dir="jni/kernels"
+            failonerror="true"
+        />
         <exec executable="ndk-build" failonerror="true"/>
     </target>
 
     <target name="clean" depends="android_rules.clean">
         <exec executable="ndk-build" failonerror="true">
             <arg value="clean"/>
-    </exec>
+        </exec>
+        <delete>
+            <fileset dir="jni/kernels/" includes="*.h"/>
+        </delete>
     </target>
 
 </project>

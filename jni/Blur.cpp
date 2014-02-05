@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "Blur.h"
+#include "kernels/blur.h"
 
 namespace improsa
 {
