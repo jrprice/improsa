@@ -47,6 +47,8 @@ namespace improsa
         setPixel(output, x, y, 2, b/9);
         setPixel(output, x, y, 3, getPixel(input, x, y, 3));
       }
+      reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
     }
+    reportStatus("Finished reference");
   }
 }
