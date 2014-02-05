@@ -89,4 +89,14 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <target name="-pre-build">
+        <exec executable="ndk-build" failonerror="true"/>
+    </target>
+
+    <target name="clean" depends="android_rules.clean">
+        <exec executable="ndk-build" failonerror="true">
+            <arg value="clean"/>
+    </exec>
+    </target>
+
 </project>

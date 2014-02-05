@@ -1,15 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
+  android:orientation="horizontal"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent"
   >
 
   <ImageView
     android:id="@+id/imageResult"
-    android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:scaleType="fitStart"
+    android:adjustViewBounds="true"
     />
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    >
+    <Button
+      android:id="@+id/reset"
+      android:layout_width="fill_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"
+      android:text="Reset"
+      android:onClick="onReset"
+      />
+    <Button
+      android:id="@+id/runReference"
+      android:layout_width="fill_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"
+      android:text="Reference"
+      android:onClick="onRun"
+      />
+    <Button
+      android:id="@+id/runHalideCPU"
+      android:layout_width="fill_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"
+      android:text="Halide CPU"
+      android:onClick="onRun"
+      />
+    <Button
+      android:id="@+id/runHalideGPU"
+      android:layout_width="fill_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"
+      android:text="Halide GPU"
+      android:onClick="onRun"
+      />
+    <Button
+      android:id="@+id/runOpenCL"
+      android:layout_width="fill_parent"
+      android:layout_height="0px"
+      android:layout_weight="1"
+      android:text="OpenCL"
+      android:onClick="onRun"
+      />
+  </LinearLayout>
+
+  <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/filterSpinner"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      />
+  </LinearLayout>
 
 </LinearLayout>
