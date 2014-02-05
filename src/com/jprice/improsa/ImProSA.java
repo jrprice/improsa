@@ -20,6 +20,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   TextView status;
   int width, height;
   int filterIndex;
+  ProcessTask processTask = null;
 
   private static final int METHOD_REFERENCE  = (1<<0);
   private static final int METHOD_HALIDE_CPU = (1<<1);
@@ -87,6 +88,11 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
 
   public void onRun(View view)
   {
+    if (processTask != null && processTask.getStatus() != AsyncTask.Status.FINISHED)
+    {
+      return;
+    }
+
     int id = view.getId();
     int method;
     switch (id)
@@ -106,16 +112,9 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
       default:
         return;
     }
-    new ProcessTask(method).execute();
-  }
 
-  public void setButtonsEnabled(boolean enabled)
-  {
-    findViewById(R.id.reset).setEnabled(enabled);
-    findViewById(R.id.runReference).setEnabled(enabled);
-    findViewById(R.id.runHalideCPU).setEnabled(enabled);
-    findViewById(R.id.runHalideGPU).setEnabled(enabled);
-    findViewById(R.id.runOpenCL).setEnabled(enabled);
+    processTask = new ProcessTask(method);
+    processTask.execute();
   }
 
   private class ProcessTask extends AsyncTask<Void, String, Void>
@@ -143,13 +142,6 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     protected void onPostExecute(Void result)
     {
       imageResult.setImageBitmap(bmpOutput);
-      setButtonsEnabled(true);
-    }
-
-    @Override
-    protected void onPreExecute()
-    {
-      setButtonsEnabled(false);
     }
 
     @Override
