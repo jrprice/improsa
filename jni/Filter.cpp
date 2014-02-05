@@ -1,7 +1,35 @@
+#include <stddef.h>
+
 #include "Filter.h"
 
 namespace improsa
 {
+  Filter::Filter()
+  {
+    m_statusCallback = NULL;
+  }
+
+  const char* Filter::getName() const
+  {
+    return m_name;
+  }
+
+  void Filter::reportStatus(const char *format, ...) const
+  {
+    if (m_statusCallback)
+    {
+      va_list args;
+      va_start(args, format);
+      m_statusCallback(format, args);
+      va_end(args);
+    }
+  }
+
+  void Filter::setStatusCallback(int (*callback)(const char*, va_list args))
+  {
+    m_statusCallback = callback;
+  }
+
   inline int clamp(int x, int min, int max)
   {
     return x < min ? min : x > max ? max : x;

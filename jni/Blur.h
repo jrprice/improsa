@@ -5,8 +5,11 @@ namespace improsa
   class Blur : public Filter
   {
   public:
-    virtual char* getName() const;
+    Blur();
 
+    virtual void runHalideCPU(Image input, Image output);
+    virtual void runHalideGPU(Image input, Image output);
+    virtual void runOpenCL(Image input, Image output);
     virtual void runReference(Image input, Image output);
   };
 }

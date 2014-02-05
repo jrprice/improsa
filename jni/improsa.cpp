@@ -1,6 +1,7 @@
 #include <android/bitmap.h>
 #include <android/log.h>
 #include <jni.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "Blur.h"
@@ -10,8 +11,6 @@
 #define METHOD_HALIDE_GPU (1<<2)
 #define METHOD_OPENCL     (1<<3)
 
-#define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, "improsa", __VA_ARGS__)
-
 using namespace improsa;
 
 extern "C"
@@ -20,7 +19,7 @@ extern "C"
   {
     new Blur(),
   };
-  static const int numFilters = sizeof(filters) / sizeof(Filter);
+  static const int numFilters = sizeof(filters) / sizeof(Filter*);
 
   JNIEXPORT jobjectArray JNICALL
     Java_com_jprice_improsa_ImProSA_getFilterList(
@@ -32,11 +31,40 @@ extern "C"
       env->NewStringUTF(""));
     for (int i = 0; i < numFilters; i++)
     {
-      char *name = filters[i]->getName();
+      const char *name = filters[i]->getName();
       env->SetObjectArrayElement(list, i, env->NewStringUTF(name));
-      free(name);
     }
     return list;
+  }
+
+  // Handles for sending status updates to GUI
+  JNIEnv *m_env;
+  jobject m_obj;
+  jmethodID m_updateStatus;
+
+  int updateStatus(const char *format, va_list args)
+  {
+    // Generate message
+    size_t sz = vsnprintf(NULL, 0, format, args) + 1;
+    char *msg = (char*)malloc(sz);
+    vsprintf(msg, format, args);
+
+    // Send message to log and GUI
+    __android_log_print(ANDROID_LOG_DEBUG, "improsa", "%s", msg);
+    m_env->CallVoidMethod(m_obj, m_updateStatus, m_env->NewStringUTF(msg));
+
+    free(msg);
+
+    return 0;
+  }
+
+  // Variadic argument wrapper for updateStatus
+  void status(const char *fmt, ...)
+  {
+    va_list args;
+    va_start(args, fmt);
+    updateStatus(fmt, args);
+    va_end(args);
   }
 
   JNIEXPORT void JNICALL
@@ -46,17 +74,16 @@ extern "C"
       jint filterIndex, jint filterMethod,
       jint width, jint height)
   {
-    // Get handle to status update method
-    jmethodID updateStatus = env->GetMethodID(
+    // Set handles for status updates
+    m_env = env;
+    m_obj = obj;
+    m_updateStatus = env->GetMethodID(
       env->GetObjectClass(obj), "updateStatus", "(Ljava/lang/String;)V");
-    #define STATUS(MSG) \
-      env->CallVoidMethod(obj, updateStatus, env->NewStringUTF(MSG))
 
     // Ensure filter index in range
     if (filterIndex >= numFilters)
     {
-      LOG("Filter index out of range (%d).", filterIndex);
-      STATUS("Filter index out of range.");
+      status("Filter index out of range (%d).", filterIndex);
       return;
     }
 
@@ -68,25 +95,23 @@ extern "C"
 
     // Run filter method
     Filter *filter = filters[filterIndex];
+    filter->setStatusCallback(updateStatus);
     switch (filterMethod)
     {
       case METHOD_REFERENCE:
-        STATUS("Running reference");
         filter->runReference(input, output);
-        STATUS("Finished reference");
         break;
       case METHOD_HALIDE_CPU:
-        // TODO
+        filter->runHalideCPU(input, output);
         break;
       case METHOD_HALIDE_GPU:
-        // TODO
+        filter->runHalideGPU(input, output);
         break;
       case METHOD_OPENCL:
-        // TODO
+        filter->runOpenCL(input, output);
         break;
       default:
-        LOG("Invalid filter method (%d).", filterMethod);
-        STATUS("Invalid filter method.");
+        status("Invalid filter method (%d).", filterMethod);
         break;
     }
 

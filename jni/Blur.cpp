@@ -4,9 +4,24 @@
 
 namespace improsa
 {
-  char* Blur::getName() const
+  Blur::Blur() : Filter()
   {
-    return strdup("Blur");
+    m_name = "Blur";
+  }
+
+  void Blur::runHalideCPU(Image input, Image output)
+  {
+    reportStatus("runHalideCPU not implemented");
+  }
+
+  void Blur::runHalideGPU(Image input, Image output)
+  {
+    reportStatus("runHalideGPU not implemented");
+  }
+
+  void Blur::runOpenCL(Image input, Image output)
+  {
+    reportStatus("runOpenCL not implemented");
   }
 
   void Blur::runReference(Image input, Image output)
