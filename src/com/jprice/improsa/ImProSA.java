@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,8 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   int width, height;
   int filterIndex;
   ProcessTask processTask = null;
+
+  private static final String TAG = "improsa";
 
   private static final int METHOD_REFERENCE  = (1<<0);
   private static final int METHOD_HALIDE_CPU = (1<<1);
@@ -66,6 +69,55 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     // Initialize status text
     status = (TextView)findViewById(R.id.status);
     status.setText("Ready.");
+
+    // Check for command-line arguments to auto-run filters
+    String filter = getIntent().getStringExtra("FILTER");
+    String method = getIntent().getStringExtra("METHOD");
+    if (filter != null && method != null && savedInstanceState == null)
+    {
+      // Find filter index
+      filterIndex = -1;
+      for (int i = 0; i < filters.length; i++)
+      {
+        if (filters[i].equalsIgnoreCase(filter))
+        {
+          filterIndex = i;
+          break;
+        }
+      }
+
+      if (filterIndex == -1)
+      {
+        Log.d(TAG, "Filter '" + filter + "' not found.");
+        filterIndex = 0;
+      }
+      else
+      {
+        filterSpinner.setSelection(filterIndex);
+
+        // Parse method
+        if (method.equalsIgnoreCase("reference"))
+        {
+          run(METHOD_REFERENCE);
+        }
+        else if (method.equalsIgnoreCase("halide_cpu"))
+        {
+          run(METHOD_HALIDE_CPU);
+        }
+        else if (method.equalsIgnoreCase("halide_gpu"))
+        {
+          run(METHOD_HALIDE_GPU);
+        }
+        else if (method.equalsIgnoreCase("opencl"))
+        {
+          run(METHOD_OPENCL);
+        }
+        else
+        {
+          Log.d(TAG, "Invalid method '" + method + "'.");
+        }
+      }
+    }
   }
 
   @Override
@@ -88,31 +140,32 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
 
   public void onRun(View view)
   {
-    if (processTask != null && processTask.getStatus() != AsyncTask.Status.FINISHED)
-    {
-      return;
-    }
-
-    int id = view.getId();
-    int method;
-    switch (id)
+    switch (view.getId())
     {
       case R.id.runReference:
-        method = METHOD_REFERENCE;
+        run(METHOD_REFERENCE);
         break;
       case R.id.runHalideCPU:
-        method = METHOD_HALIDE_CPU;
+        run(METHOD_HALIDE_CPU);
         break;
       case R.id.runHalideGPU:
-        method = METHOD_HALIDE_GPU;
+        run(METHOD_HALIDE_GPU);
         break;
       case R.id.runOpenCL:
-        method = METHOD_OPENCL;
+        run(METHOD_OPENCL);
         break;
       default:
         return;
     }
+  }
 
+  public void run(int method)
+  {
+    if (processTask != null &&
+        processTask.getStatus() != AsyncTask.Status.FINISHED)
+    {
+      return;
+    }
     processTask = new ProcessTask(method);
     processTask.execute();
   }
