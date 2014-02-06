@@ -60,7 +60,8 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     String[] filters = getFilterList();
     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
       this, android.R.layout.simple_spinner_item, filters);
-    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    adapter.setDropDownViewResource(
+      android.R.layout.simple_spinner_dropdown_item);
     Spinner filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
     filterSpinner.setAdapter(adapter);
     filterSpinner.setOnItemSelectedListener(this);
@@ -188,7 +189,8 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     @Override
     protected Boolean doInBackground(Void... inputs)
     {
-      return process(bmpInput, bmpOutput, filterIndex, filterMethod, width, height);
+      return process(
+        bmpInput, bmpOutput, filterIndex, filterMethod, width, height);
     }
 
     @Override
