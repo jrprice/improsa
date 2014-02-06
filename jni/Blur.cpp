@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "Blur.h"
-#include "kernels/blur.h"
+#include "opencl/blur.h"
 
 #include <CL/cl.h>
 

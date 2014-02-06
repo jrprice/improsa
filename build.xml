@@ -92,7 +92,7 @@
     <target name="-pre-build">
         <exec
             executable="./stringify_kernels.sh"
-            dir="jni/kernels"
+            dir="jni/opencl"
             failonerror="true"
         />
         <exec executable="ndk-build" failonerror="true"/>
@@ -103,7 +103,7 @@
             <arg value="clean"/>
         </exec>
         <delete>
-            <fileset dir="jni/kernels/" includes="*.h"/>
+            <fileset dir="jni/opencl/" includes="*.h"/>
         </delete>
     </target>
 
