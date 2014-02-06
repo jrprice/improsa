@@ -19,7 +19,7 @@ namespace improsa
     return m_name;
   }
 
-  bool Filter::initCL(const char *source)
+  bool Filter::initCL(const char *source, const char *options)
   {
     // Ensure no existing context
     releaseCL();
@@ -46,7 +46,7 @@ namespace improsa
     m_program = clCreateProgramWithSource(m_context, 1, &source, NULL, &err);
     CHECK_ERROR_OCL(err, "creating program", return false);
 
-    err = clBuildProgram(m_program, 1, &m_device, "", NULL, NULL);
+    err = clBuildProgram(m_program, 1, &m_device, options, NULL, NULL);
     if (err == CL_BUILD_PROGRAM_FAILURE)
     {
       size_t sz;

@@ -43,7 +43,7 @@ namespace improsa
     cl_context m_context;
     cl_command_queue m_queue;
     cl_program m_program;
-    bool initCL(const char *source);
+    bool initCL(const char *source, const char *options);
     void releaseCL();
   };
 

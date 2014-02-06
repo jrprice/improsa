@@ -26,7 +26,7 @@ namespace improsa
 
   bool Blur::runOpenCL(Image input, Image output)
   {
-    if (!initCL(blur_kernel))
+    if (!initCL(blur_kernel, "-cl-fast-relaxed-math"))
     {
       return false;
     }
