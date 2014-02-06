@@ -62,16 +62,27 @@ namespace improsa
 
     reportStatus("Running OpenCL kernel");
 
-    double start = getCurrentTime();
-
     size_t global[2] = {output.width, output.height};
-    err = clEnqueueNDRangeKernel(
-      m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
-    CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
 
+    // Timed runs
+    int iterations = 8;
+    double start = getCurrentTime();
+    for (int i = 0; i < iterations + 1; i++)
+    {
+      err = clEnqueueNDRangeKernel(
+        m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
+      CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
+
+      // Start timing after warm-up run
+      if (i == 0)
+      {
+        err = clFinish(m_queue);
+        CHECK_ERROR_OCL(err, "running kernel", return false);
+        start = getCurrentTime();
+      }
+    }
     err = clFinish(m_queue);
     CHECK_ERROR_OCL(err, "running kernel", return false);
-
     double end = getCurrentTime();
 
     reportStatus("Finished OpenCL kernel");
@@ -84,7 +95,7 @@ namespace improsa
     bool passed = verify(input, output);
     reportStatus(
       "Finished in %.1lf ms (verification %s)",
-      (end-start)*1e-3, passed ? "passed" : "failed");
+      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
 
     clReleaseMemObject(d_input);
     clReleaseMemObject(d_output);
