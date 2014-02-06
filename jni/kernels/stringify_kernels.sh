@@ -7,7 +7,7 @@ do
     IN=$name.cl
     OUT=$name.h
 
-    echo "extern const char "$name"_kernel[] =" >$OUT
+    echo "const char *"$name"_kernel =" >$OUT
     sed -e 's/\\/\\\\/g;s/"/\\"/g;s/  /\\t/g;s/^/"/;s/$/\\n"/' $IN >>$OUT
     if [ $? -ne 0 ]
     then

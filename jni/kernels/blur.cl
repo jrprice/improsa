@@ -9,7 +9,7 @@ kernel void blur(read_only image2d_t input,
   int x = get_global_id(0);
   int y = get_global_id(1);
 
-  int4 sum = 0;
+  uint4 sum = 0;
   for (int j = -1; j <= 1; j++)
   {
     for (int i = -1; i <= 1; i++)
