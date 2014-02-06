@@ -7,9 +7,9 @@ namespace improsa
   public:
     Blur();
 
-    virtual void runHalideCPU(Image input, Image output);
-    virtual void runHalideGPU(Image input, Image output);
-    virtual void runOpenCL(Image input, Image output);
-    virtual void runReference(Image input, Image output);
+    virtual bool runHalideCPU(Image input, Image output);
+    virtual bool runHalideGPU(Image input, Image output);
+    virtual bool runOpenCL(Image input, Image output);
+    virtual bool runReference(Image input, Image output);
   };
 }

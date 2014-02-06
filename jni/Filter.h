@@ -26,10 +26,10 @@ namespace improsa
 
     virtual const char* getName() const;
 
-    virtual void runHalideCPU(Image input, Image output) = 0;
-    virtual void runHalideGPU(Image input, Image output) = 0;
-    virtual void runOpenCL(Image input, Image output) = 0;
-    virtual void runReference(Image input, Image output) = 0;
+    virtual bool runHalideCPU(Image input, Image output) = 0;
+    virtual bool runHalideGPU(Image input, Image output) = 0;
+    virtual bool runOpenCL(Image input, Image output) = 0;
+    virtual bool runReference(Image input, Image output) = 0;
 
     virtual void setStatusCallback(int (*callback)(const char*, va_list args));
 

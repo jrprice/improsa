@@ -70,7 +70,7 @@ extern "C"
     va_end(args);
   }
 
-  JNIEXPORT void JNICALL
+  JNIEXPORT jboolean JNICALL
     Java_com_jprice_improsa_ImProSA_00024ProcessTask_process(
       JNIEnv *env, jobject obj,
       jobject bmpInput, jobject bmpOutput,
@@ -87,7 +87,7 @@ extern "C"
     if (filterIndex >= numFilters)
     {
       status("Filter index out of range (%d).", filterIndex);
-      return;
+      return false;
     }
 
     // Lock bitmaps
@@ -97,21 +97,22 @@ extern "C"
     AndroidBitmap_lockPixels(env, bmpOutput, (void**)&output.data);
 
     // Run filter method
+    jboolean success = false;
     Filter *filter = filters[filterIndex];
     filter->setStatusCallback(updateStatus);
     switch (filterMethod)
     {
       case METHOD_REFERENCE:
-        filter->runReference(input, output);
+        success = filter->runReference(input, output);
         break;
       case METHOD_HALIDE_CPU:
-        filter->runHalideCPU(input, output);
+        success = filter->runHalideCPU(input, output);
         break;
       case METHOD_HALIDE_GPU:
-        filter->runHalideGPU(input, output);
+        success = filter->runHalideGPU(input, output);
         break;
       case METHOD_OPENCL:
-        filter->runOpenCL(input, output);
+        success = filter->runOpenCL(input, output);
         break;
       default:
         status("Invalid filter method (%d).", filterMethod);
@@ -121,5 +122,7 @@ extern "C"
     // Unlock bitmaps
     AndroidBitmap_unlockPixels(env, bmpInput);
     AndroidBitmap_unlockPixels(env, bmpOutput);
+
+    return success;
   }
 }

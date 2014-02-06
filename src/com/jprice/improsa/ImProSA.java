@@ -170,14 +170,15 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     processTask.execute();
   }
 
-  private class ProcessTask extends AsyncTask<Void, String, Void>
+  private class ProcessTask extends AsyncTask<Void, String, Boolean>
   {
-    private native void process(
+    private native boolean process(
       Bitmap in, Bitmap out,
       int index, int type,
       int w, int h);
 
-    int filterMethod;
+    private int filterMethod;
+    private boolean success;
 
     public ProcessTask(int method)
     {
@@ -185,16 +186,16 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     }
 
     @Override
-    protected Void doInBackground(Void... inputs)
+    protected Boolean doInBackground(Void... inputs)
     {
-      process(bmpInput, bmpOutput, filterIndex, filterMethod, width, height);
-      return null;
+      return process(bmpInput, bmpOutput, filterIndex, filterMethod, width, height);
     }
 
     @Override
-    protected void onPostExecute(Void result)
+    protected void onPostExecute(Boolean result)
     {
       imageResult.setImageBitmap(bmpOutput);
+      imageResult.setBackgroundColor(result ? 0xFF00FF00 : 0xFFFF0000);
     }
 
     @Override

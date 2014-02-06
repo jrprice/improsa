@@ -12,21 +12,23 @@ namespace improsa
     m_name = "Blur";
   }
 
-  void Blur::runHalideCPU(Image input, Image output)
+  bool Blur::runHalideCPU(Image input, Image output)
   {
     reportStatus("runHalideCPU not implemented");
+    return false;
   }
 
-  void Blur::runHalideGPU(Image input, Image output)
+  bool Blur::runHalideGPU(Image input, Image output)
   {
     reportStatus("runHalideGPU not implemented");
+    return false;
   }
 
-  void Blur::runOpenCL(Image input, Image output)
+  bool Blur::runOpenCL(Image input, Image output)
   {
     if (!initCL(blur_kernel))
     {
-      return;
+      return false;
     }
 
     cl_int err;
@@ -35,28 +37,28 @@ namespace improsa
     cl_image_format format = {CL_RGBA, CL_UNSIGNED_INT8};
 
     kernel = clCreateKernel(m_program, "blur", &err);
-    CHECK_ERROR_OCL(err, "creating kernel", return);
+    CHECK_ERROR_OCL(err, "creating kernel", return false);
 
     d_input = clCreateImage2D(
       m_context, CL_MEM_READ_ONLY, &format,
       input.width, input.height, 0, NULL, &err);
-    CHECK_ERROR_OCL(err, "creating input image", return);
+    CHECK_ERROR_OCL(err, "creating input image", return false);
 
     d_output = clCreateImage2D(
       m_context, CL_MEM_WRITE_ONLY, &format,
       input.width, input.height, 0, NULL, &err);
-    CHECK_ERROR_OCL(err, "creating output image", return);
+    CHECK_ERROR_OCL(err, "creating output image", return false);
 
     size_t origin[3] = {0, 0, 0};
     size_t region[3] = {input.width, input.height, 1};
     err = clEnqueueWriteImage(
       m_queue, d_input, CL_TRUE,
       origin, region, 0, 0, input.data, 0, NULL, NULL);
-    CHECK_ERROR_OCL(err, "writing image data", return);
+    CHECK_ERROR_OCL(err, "writing image data", return false);
 
     err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_input);
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_output);
-    CHECK_ERROR_OCL(err, "setting kernel arguments", return);
+    CHECK_ERROR_OCL(err, "setting kernel arguments", return false);
 
     reportStatus("Running OpenCL kernel");
 
@@ -65,10 +67,10 @@ namespace improsa
     size_t global[2] = {output.width, output.height};
     err = clEnqueueNDRangeKernel(
       m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
-    CHECK_ERROR_OCL(err, "enqueuing kernel", return);
+    CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
 
     err = clFinish(m_queue);
-    CHECK_ERROR_OCL(err, "running kernel", return);
+    CHECK_ERROR_OCL(err, "running kernel", return false);
 
     double end = getCurrentTime();
 
@@ -77,20 +79,21 @@ namespace improsa
     err = clEnqueueReadImage(
       m_queue, d_output, CL_TRUE,
       origin, region, 0, 0, output.data, 0, NULL, NULL);
-    CHECK_ERROR_OCL(err, "reading image data", return);
+    CHECK_ERROR_OCL(err, "reading image data", return false);
 
-    bool foo = verify(input, output);
+    bool passed = verify(input, output);
     reportStatus(
-      "Finished in %.1lf ms (%s)",
-      (end-start)*1e-3, foo ? "PASSED" : "FAILED");
+      "Finished in %.1lf ms (verification %s)",
+      (end-start)*1e-3, passed ? "passed" : "failed");
 
     clReleaseMemObject(d_input);
     clReleaseMemObject(d_output);
     clReleaseKernel(kernel);
     releaseCL();
+    return passed;
   }
 
-  void Blur::runReference(Image input, Image output)
+  bool Blur::runReference(Image input, Image output)
   {
     for (int y = 0; y < output.height; y++)
     {
@@ -116,5 +119,6 @@ namespace improsa
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
     }
     reportStatus("Finished reference");
+    return true;
   }
 }
