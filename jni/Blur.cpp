@@ -49,24 +49,40 @@ namespace improsa
 
     size_t origin[3] = {0, 0, 0};
     size_t region[3] = {input.width, input.height, 1};
-    err = clEnqueueWriteImage(m_queue, d_input, CL_TRUE, origin, region, 0, 0, input.data, 0, NULL, NULL);
+    err = clEnqueueWriteImage(
+      m_queue, d_input, CL_TRUE,
+      origin, region, 0, 0, input.data, 0, NULL, NULL);
     CHECK_ERROR_OCL(err, "writing image data", return);
 
     err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_input);
     err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_output);
     CHECK_ERROR_OCL(err, "setting kernel arguments", return);
 
+    reportStatus("Running OpenCL kernel");
+
+    double start = getCurrentTime();
+
     size_t global[2] = {output.width, output.height};
-    err = clEnqueueNDRangeKernel(m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
+    err = clEnqueueNDRangeKernel(
+      m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
     CHECK_ERROR_OCL(err, "enqueuing kernel", return);
 
-    reportStatus("Running OpenCL kernel");
     err = clFinish(m_queue);
     CHECK_ERROR_OCL(err, "running kernel", return);
+
+    double end = getCurrentTime();
+
     reportStatus("Finished OpenCL kernel");
 
-    err = clEnqueueReadImage(m_queue, d_output, CL_TRUE, origin, region, 0, 0, output.data, 0, NULL, NULL);
+    err = clEnqueueReadImage(
+      m_queue, d_output, CL_TRUE,
+      origin, region, 0, 0, output.data, 0, NULL, NULL);
     CHECK_ERROR_OCL(err, "reading image data", return);
+
+    bool foo = verify(input, output);
+    reportStatus(
+      "Finished in %.1lf ms (%s)",
+      (end-start)*1e-3, foo ? "PASSED" : "FAILED");
 
     clReleaseMemObject(d_input);
     clReleaseMemObject(d_output);

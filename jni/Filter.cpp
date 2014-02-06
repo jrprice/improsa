@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "Filter.h"
 
@@ -98,6 +99,15 @@ namespace improsa
     m_statusCallback = callback;
   }
 
+  bool Filter::verify(Image input, Image output)
+  {
+    return true;
+  }
+
+  /////////////////
+  // Image utils //
+  /////////////////
+
   inline int clamp(int x, int min, int max)
   {
     return x < min ? min : x > max ? max : x;
@@ -115,5 +125,16 @@ namespace improsa
     int _x = clamp(x, 0, image.width-1);
     int _y = clamp(y, 0, image.height-1);
     image.data[(_x + _y*image.width)*4 + c] = value;
+  }
+
+  //////////////////
+  // Timing utils //
+  //////////////////
+
+  double getCurrentTime()
+  {
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    return tv.tv_usec + tv.tv_sec*1e6;
   }
 }

@@ -37,6 +37,7 @@ namespace improsa
     const char *m_name;
     int (*m_statusCallback)(const char*, va_list args);
     void reportStatus(const char *format, ...) const;
+    virtual bool verify(Image input, Image output);
 
     cl_device_id m_device;
     cl_context m_context;
@@ -49,4 +50,7 @@ namespace improsa
   // Image utils
   unsigned char getPixel(Image image, int x, int y, int c);
   void setPixel(Image image, int x, int y, int c, unsigned char value);
+
+  // Timing utils
+  double getCurrentTime();
 }
