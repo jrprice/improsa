@@ -51,7 +51,7 @@ namespace improsa
     {
       size_t sz;
       clGetProgramBuildInfo(
-        m_program, m_device, CL_PROGRAM_BUILD_LOG, 0, NULL, NULL);
+        m_program, m_device, CL_PROGRAM_BUILD_LOG, 0, NULL, &sz);
       char *log = (char*)malloc(++sz);
       clGetProgramBuildInfo(
         m_program, m_device, CL_PROGRAM_BUILD_LOG, sz, log, NULL);
