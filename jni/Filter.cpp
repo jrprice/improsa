@@ -99,9 +99,48 @@ namespace improsa
     m_statusCallback = callback;
   }
 
-  bool Filter::verify(Image input, Image output)
+  bool Filter::verify(Image input, Image output, int tolerance)
   {
-    return true;
+    // Compute reference image
+    Image ref =
+    {
+      (unsigned char*)malloc(output.width*output.height*4),
+      output.width,
+      output.height
+    };
+    runReference(input, ref);
+
+    // Compare pixels
+    int errors = 0;
+    const int maxErrors = 16;
+    for (int y = 0; y < output.height; y++)
+    {
+      for (int x = 0; x < output.width; x++)
+      {
+        for (int c = 0; c < 4; c++)
+        {
+          int r = getPixel(ref, x, y, c);
+          int o = getPixel(output, x, y, c);
+          int diff = abs(r - o);
+          if (diff > tolerance)
+          {
+            // Only report first few errors
+            if (errors < maxErrors)
+            {
+              reportStatus("Mismatch at (%d,%d,%d): %d vs %d", x, y, c, r, o);
+            }
+            if (++errors == maxErrors)
+            {
+              reportStatus("Supressing further errors");
+            }
+          }
+        }
+      }
+    }
+
+    free(ref.data);
+
+    return errors == 0;
   }
 
   /////////////////

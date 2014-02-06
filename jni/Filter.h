@@ -37,7 +37,7 @@ namespace improsa
     const char *m_name;
     int (*m_statusCallback)(const char*, va_list args);
     void reportStatus(const char *format, ...) const;
-    virtual bool verify(Image input, Image output);
+    virtual bool verify(Image input, Image output, int tolerance=1);
 
     cl_device_id m_device;
     cl_context m_context;
