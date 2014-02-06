@@ -10,12 +10,12 @@ kernel void blur(read_only image2d_t input,
   int y = get_global_id(1);
 
   float4 sum = 0.f;
-  for (int j = -1; j <= 1; j++)
+  for (int j = -2; j <= 2; j++)
   {
-    for (int i = -1; i <= 1; i++)
+    for (int i = -2; i <= 2; i++)
     {
       sum += read_imagef(input, sampler, (int2)(x+i, y+j));
     }
   }
-  write_imagef(output, (int2)(x, y), sum/9.f);
+  write_imagef(output, (int2)(x, y), sum/25.f);
 }
