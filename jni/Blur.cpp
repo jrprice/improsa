@@ -34,7 +34,7 @@ namespace improsa
     cl_int err;
     cl_kernel kernel;
     cl_mem d_input, d_output;
-    cl_image_format format = {CL_RGBA, CL_UNSIGNED_INT8};
+    cl_image_format format = {CL_RGBA, CL_UNORM_INT8};
 
     kernel = clCreateKernel(m_program, "blur", &err);
     CHECK_ERROR_OCL(err, "creating kernel", return false);
