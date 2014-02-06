@@ -110,21 +110,21 @@ namespace improsa
     {
       for (int x = 0; x < output.width; x++)
       {
-        int r = 0;
-        int g = 0;
-        int b = 0;
+        float r = 0;
+        float g = 0;
+        float b = 0;
         for (int j = -1; j <= 1; j++)
         {
           for (int i = -1; i <= 1; i++)
           {
-            r += getPixel(input, x+i, y+j, 0);
-            g += getPixel(input, x+i, y+j, 1);
-            b += getPixel(input, x+i, y+j, 2);
+            r += getPixel(input, x+i, y+j, 0)/255.f;
+            g += getPixel(input, x+i, y+j, 1)/255.f;
+            b += getPixel(input, x+i, y+j, 2)/255.f;
           }
         }
-        setPixel(output, x, y, 0, r/9);
-        setPixel(output, x, y, 1, g/9);
-        setPixel(output, x, y, 2, b/9);
+        setPixel(output, x, y, 0, 255*r/9.f);
+        setPixel(output, x, y, 1, 255*g/9.f);
+        setPixel(output, x, y, 2, 255*b/9.f);
         setPixel(output, x, y, 3, getPixel(input, x, y, 3));
       }
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
