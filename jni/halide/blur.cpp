@@ -3,10 +3,9 @@
 void cpu()
 {
   ImageParam input(UInt(8), 3, "input");
-
   Func clamped("clamped");
   Func blur_x("blur_x"), blur_y("blur_y");
-  Var c, x, y, xi, yi;
+  Var c("c"), x("x"), y("y"), xi("xi"), yi("yi");
 
   // Algorithm
   clamped(x, y, c) = input(
@@ -44,10 +43,10 @@ void cpu()
 
 void gpu()
 {
-  ImageParam input(UInt(8), 2, "input");
+  ImageParam input(UInt(8), 3, "input");
   Func clamped("clamped");
   Func blur_x("blur_x"), blur_y("blur_y");
-  Var x, y, xi, yi;
+  Var c("c"), x("x"), y("y"), xi("xi"), yi("yi");
 
   // Algorithm
   clamped(x, y, c) = input(
