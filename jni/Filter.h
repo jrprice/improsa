@@ -24,6 +24,9 @@ typedef struct buffer_t {
     bool dev_dirty;
 } buffer_t;
 #endif
+extern "C" void halide_dev_sync(void *user_context);
+extern "C" void halide_copy_to_dev(void *user_context, buffer_t *buf);
+extern "C" void halide_copy_to_host(void *user_context, buffer_t *buf);
 
 namespace improsa
 {

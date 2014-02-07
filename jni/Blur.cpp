@@ -52,8 +52,36 @@ namespace improsa
 
   bool Blur::runHalideGPU(Image input, Image output)
   {
-    reportStatus("runHalideGPU not implemented");
-    return false;
+    // Create halide buffers
+    buffer_t inputBuffer = createHalideBuffer(input);
+    buffer_t outputBuffer = createHalideBuffer(output);
+
+    reportStatus("Running Halide GPU filter");
+
+    // Warm-up run
+    inputBuffer.host_dirty = true;
+    halide_blur_gpu(&inputBuffer, &outputBuffer);
+    halide_dev_sync(NULL);
+
+    // Timed runs
+    const int iterations = 8;
+    double start = getCurrentTime();
+    for (int i = 0; i < iterations; i++)
+    {
+      halide_blur_gpu(&inputBuffer, &outputBuffer);
+    }
+    halide_dev_sync(NULL);
+    double end = getCurrentTime();
+
+    halide_copy_to_host(NULL, &outputBuffer);
+
+    // Verification
+    bool passed = verify(input, output);
+    reportStatus(
+      "Finished in %.1lf ms (verification %s)",
+      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
+
+    return passed;
   }
 
   bool Blur::runOpenCL(Image input, Image output)
@@ -143,6 +171,7 @@ namespace improsa
     if (m_reference.data)
     {
       memcpy(output.data, m_reference.data, output.width*output.height*4);
+      reportStatus("Finished reference (cached)");
       return true;
     }
 
