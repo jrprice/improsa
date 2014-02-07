@@ -12,6 +12,15 @@ namespace improsa
   Blur::Blur() : Filter()
   {
     m_name = "Blur";
+    m_reference.data = NULL;
+  }
+
+  Blur::~Blur()
+  {
+    if (m_reference.data)
+    {
+      delete[] m_reference.data;
+    }
   }
 
   bool Blur::runHalideCPU(Image input, Image output)
@@ -148,6 +157,13 @@ namespace improsa
 
   bool Blur::runReference(Image input, Image output)
   {
+    // Check for cached result
+    if (m_reference.data)
+    {
+      memcpy(output.data, m_reference.data, output.width*output.height*4);
+      return true;
+    }
+
     for (int y = 0; y < output.height; y++)
     {
       for (int x = 0; x < output.width; x++)
@@ -172,6 +188,13 @@ namespace improsa
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
     }
     reportStatus("Finished reference");
+
+    // Cache result
+    m_reference.width = output.width;
+    m_reference.height = output.height;
+    m_reference.data = new unsigned char[output.width*output.height*4];
+    memcpy(m_reference.data, output.data, output.width*output.height*4);
+
     return true;
   }
 }
