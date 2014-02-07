@@ -152,6 +152,20 @@ namespace improsa
     return x < min ? min : x > max ? max : x;
   }
 
+  buffer_t createHalideBuffer(Image image)
+  {
+    buffer_t buffer = {0};
+    buffer.host = image.data;
+    buffer.extent[0] = image.width;
+    buffer.extent[1] = image.height;
+    buffer.extent[2] = 4;
+    buffer.stride[0] = 4;
+    buffer.stride[1] = image.width*4;
+    buffer.stride[2] = 1;
+    buffer.elem_size = 1;
+    return buffer;
+  }
+
   unsigned char getPixel(Image image, int x, int y, int c)
   {
     int _x = clamp(x, 0, image.width-1);
