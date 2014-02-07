@@ -4,4 +4,7 @@ gen/
 libs/
 obj/
 
-jni/kernels/*.h
+jni/opencl/*.h
+jni/halide/*.s
+jni/halide/*_cpu.h
+jni/halide/*_gpu.h

@@ -95,11 +95,23 @@
             dir="jni/opencl"
             failonerror="true"
         />
+        <exec
+            executable="./gen_filters.sh"
+            dir="jni/halide"
+            failonerror="true">
+            <env key="HL_TARGET" value="arm-32-android-opencl" />
+        </exec>
         <exec executable="ndk-build" failonerror="true"/>
     </target>
 
     <target name="clean" depends="android_rules.clean">
         <exec executable="ndk-build" failonerror="true">
+            <arg value="clean"/>
+        </exec>
+        <exec
+            executable="./gen_filters.sh"
+            dir="jni/halide"
+            failonerror="true">
             <arg value="clean"/>
         </exec>
         <delete>

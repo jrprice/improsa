@@ -2,6 +2,8 @@
 
 #include "Blur.h"
 #include "opencl/blur.h"
+#include "halide/blur_cpu.h"
+#include "halide/blur_gpu.h"
 
 #include <CL/cl.h>
 
@@ -14,8 +16,47 @@ namespace improsa
 
   bool Blur::runHalideCPU(Image input, Image output)
   {
-    reportStatus("runHalideCPU not implemented");
-    return false;
+    // Input buffer
+    buffer_t inputBuffer = {0};
+    inputBuffer.host = input.data;
+    inputBuffer.extent[0] = input.width;
+    inputBuffer.extent[1] = input.height;
+    inputBuffer.extent[2] = 4;
+    inputBuffer.stride[0] = 4;
+    inputBuffer.stride[1] = input.width*4;
+    inputBuffer.stride[2] = 1;
+    inputBuffer.elem_size = 1;
+
+    // Output buffer
+    buffer_t outputBuffer = {0};
+    outputBuffer.host = output.data;
+    outputBuffer.extent[0] = output.width;
+    outputBuffer.extent[1] = output.height;
+    outputBuffer.extent[2] = 4;
+    outputBuffer.stride[0] = 4;
+    outputBuffer.stride[1] = output.width*4;
+    outputBuffer.stride[2] = 1;
+    outputBuffer.elem_size = 1;
+
+    // Warm-up run
+    halide_blur_cpu(&inputBuffer, &outputBuffer);
+
+    // Timed runs
+    const int iterations = 8;
+    double start = getCurrentTime();
+    for (int i = 0; i < iterations; i++)
+    {
+      halide_blur_cpu(&inputBuffer, &outputBuffer);
+    }
+    double end = getCurrentTime();
+
+    // Verification
+    bool passed = verify(input, output);
+    reportStatus(
+      "Finished in %.1lf ms (verification %s)",
+      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
+
+    return passed;
   }
 
   bool Blur::runHalideGPU(Image input, Image output)
@@ -92,6 +133,7 @@ namespace improsa
       origin, region, 0, 0, output.data, 0, NULL, NULL);
     CHECK_ERROR_OCL(err, "reading image data", return false);
 
+    // Verification
     bool passed = verify(input, output);
     reportStatus(
       "Finished in %.1lf ms (verification %s)",
