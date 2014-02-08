@@ -72,11 +72,13 @@ void gpu()
 
   // Channel order
   input.set_stride(0, 4);
+  input.set_extent(2, 4);
   blur_y.reorder_storage(c, x, y);
   blur_y.output_buffer().set_stride(0, 4);
+  blur_y.output_buffer().set_extent(2, 4);
 
   // Schedule
-  blur_y.cuda_tile(x, y, 8, 8);
+  blur_y.cuda_tile(x, y, 16, 4);
 
   std::vector<Argument> args;
   args.push_back(input);
