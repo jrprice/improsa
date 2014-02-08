@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "Blur.h"
+#include "Sobel.h"
 
 #define METHOD_REFERENCE  (1<<0)
 #define METHOD_HALIDE_CPU (1<<1)
@@ -18,6 +19,7 @@ extern "C"
   static Filter *filters[] =
   {
     new Blur(),
+    new Sobel()
   };
   static const int numFilters = sizeof(filters) / sizeof(Filter*);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CL/cl.h>
+#include <math.h>
 #include <stdarg.h>
 
 #define CHECK_ERROR_OCL(err, op, action)                       \

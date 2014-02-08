@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kernels=blur
+kernels="blur sobel"
 
 for name in $kernels
 do

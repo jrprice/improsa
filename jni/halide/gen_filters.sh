@@ -1,6 +1,6 @@
 #!/bin/bash
 
-functions=blur
+functions="blur sobel"
 
 if [ "$1" == clean ]
 then
