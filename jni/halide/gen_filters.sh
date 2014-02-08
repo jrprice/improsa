@@ -18,7 +18,7 @@ do
     echo "Skipping generation of halide $name"
     continue
   fi
-  echo "Generating halide blur functions"
+  echo "Generating halide $name functions"
 
   g++ -lHalide -o $name $name.cpp
   if [ $? -ne 0 ]
