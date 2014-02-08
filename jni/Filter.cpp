@@ -119,8 +119,8 @@ namespace improsa
       {
         for (int c = 0; c < 4; c++)
         {
-          int r = getPixel(ref, x, y, c);
-          int o = getPixel(output, x, y, c);
+          int r = getPixel(ref, x, y, c)*255;
+          int o = getPixel(output, x, y, c)*255;
           int diff = abs(r - o);
           if (diff > tolerance)
           {
