@@ -152,6 +152,11 @@ namespace improsa
     return x < min ? min : x > max ? max : x;
   }
 
+  inline float clamp(float x, float min, float max)
+  {
+    return x < min ? min : x > max ? max : x;
+  }
+
   buffer_t createHalideBuffer(Image image)
   {
     buffer_t buffer = {0};
@@ -166,18 +171,38 @@ namespace improsa
     return buffer;
   }
 
-  unsigned char getPixel(Image image, int x, int y, int c)
+  float getPixel(Image image, int x, int y, int c)
   {
     int _x = clamp(x, 0, image.width-1);
     int _y = clamp(y, 0, image.height-1);
-    return image.data[(_x + _y*image.width)*4 + c];
+    return image.data[(_x + _y*image.width)*4 + c]/255.f;
   }
 
-  void setPixel(Image image, int x, int y, int c, unsigned char value)
+  float getPixelGrayscale(Image image, int x, int y)
   {
     int _x = clamp(x, 0, image.width-1);
     int _y = clamp(y, 0, image.height-1);
-    image.data[(_x + _y*image.width)*4 + c] = value;
+    float r = image.data[(_x + _y*image.width)*4 + 0]/255.f * 0.299f;
+    float g = image.data[(_x + _y*image.width)*4 + 1]/255.f * 0.587f;
+    float b = image.data[(_x + _y*image.width)*4 + 2]/255.f * 0.114f;
+    return (r + g + b);
+  }
+
+  void setPixel(Image image, int x, int y, int c, float value)
+  {
+    int _x = clamp(x, 0, image.width-1);
+    int _y = clamp(y, 0, image.height-1);
+    image.data[(_x + _y*image.width)*4 + c] = clamp(value, 0.f, 1.f)*255.f;
+  }
+
+  void setPixelGrayscale(Image image, int x, int y, float value)
+  {
+    int _x = clamp(x, 0, image.width-1);
+    int _y = clamp(y, 0, image.height-1);
+    image.data[(_x + _y*image.width)*4 + 0] = clamp(value, 0.f, 1.f)*255;
+    image.data[(_x + _y*image.width)*4 + 1] = clamp(value, 0.f, 1.f)*255;
+    image.data[(_x + _y*image.width)*4 + 2] = clamp(value, 0.f, 1.f)*255;
+    image.data[(_x + _y*image.width)*4 + 3] = 255;
   }
 
   //////////////////

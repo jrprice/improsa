@@ -190,14 +190,14 @@ namespace improsa
         {
           for (int i = -2; i <= 2; i++)
           {
-            r += getPixel(input, x+i, y+j, 0)/255.f;
-            g += getPixel(input, x+i, y+j, 1)/255.f;
-            b += getPixel(input, x+i, y+j, 2)/255.f;
+            r += getPixel(input, x+i, y+j, 0);
+            g += getPixel(input, x+i, y+j, 1);
+            b += getPixel(input, x+i, y+j, 2);
           }
         }
-        setPixel(output, x, y, 0, 255*r/25.f);
-        setPixel(output, x, y, 1, 255*g/25.f);
-        setPixel(output, x, y, 2, 255*b/25.f);
+        setPixel(output, x, y, 0, r/25.f);
+        setPixel(output, x, y, 1, g/25.f);
+        setPixel(output, x, y, 2, b/25.f);
         setPixel(output, x, y, 3, getPixel(input, x, y, 3));
       }
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));

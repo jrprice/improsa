@@ -67,8 +67,10 @@ namespace improsa
 
   // Image utils
   buffer_t createHalideBuffer(Image image);
-  unsigned char getPixel(Image image, int x, int y, int c);
-  void setPixel(Image image, int x, int y, int c, unsigned char value);
+  float getPixel(Image image, int x, int y, int c);
+  float getPixelGrayscale(Image image, int x, int y);
+  void setPixel(Image image, int x, int y, int c, float value);
+  void setPixelGrayscale(Image image, int x, int y, float value);
 
   // Timing utils
   double getCurrentTime();
