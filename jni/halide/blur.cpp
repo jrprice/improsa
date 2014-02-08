@@ -29,11 +29,13 @@ void cpu()
 
   // Channel order
   input.set_stride(0, 4);
+  input.set_extent(2, 4);
   blur_y.reorder_storage(c, x, y);
   blur_y.output_buffer().set_stride(0, 4);
+  blur_y.output_buffer().set_extent(2, 4);
 
   // Schedule
-  // TODO
+  blur_y.parallel(y).vectorize(c, 4);
 
   std::vector<Argument> args;
   args.push_back(input);
