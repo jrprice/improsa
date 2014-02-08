@@ -18,6 +18,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
 {
   Bitmap bmpInput, bmpOutput;
   ImageView imageResult;
+  Spinner filterSpinner, imageSpinner;
   TextView status;
   int width, height;
   int filterIndex;
@@ -42,30 +43,39 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
 
-    // Load input image
-    bmpInput = BitmapFactory.decodeResource(
-      this.getResources(),
-      R.drawable.baboon);
-    width = bmpInput.getWidth();
-    height = bmpInput.getHeight();
-
-    // Allocate output image
-    bmpOutput = Bitmap.createBitmap(width, height, bmpInput.getConfig());
-
     // Initialise image view
     imageResult = (ImageView)findViewById(R.id.imageResult);
+    loadImage(R.drawable.baboon);
+
     imageResult.setImageBitmap(bmpInput);
 
-    // Initialise filter list
+    // Initialise filter spinner
     String[] filters = getFilterList();
     ArrayAdapter<String> adapter = new ArrayAdapter<String>(
       this, android.R.layout.simple_spinner_item, filters);
     adapter.setDropDownViewResource(
       android.R.layout.simple_spinner_dropdown_item);
-    Spinner filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
+    filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
     filterSpinner.setAdapter(adapter);
     filterSpinner.setOnItemSelectedListener(this);
     filterIndex = 0;
+
+    // Initialise image spinner
+    String[] images =
+    {
+      "Peppers",
+      "Baboon",
+      "Lena",
+      "Doughnuts"
+    };
+    adapter = new ArrayAdapter<String>(
+      this, android.R.layout.simple_spinner_item, images);
+    adapter.setDropDownViewResource(
+      android.R.layout.simple_spinner_dropdown_item);
+    imageSpinner = (Spinner)findViewById(R.id.imageSpinner);
+    imageSpinner.setAdapter(adapter);
+    imageSpinner.setOnItemSelectedListener(this);
+    imageSpinner.setSelection(1);
 
     // Initialize status text
     status = (TextView)findViewById(R.id.status);
@@ -121,11 +131,48 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     }
   }
 
+  public void loadImage(int id)
+  {
+    // Load input image
+    bmpInput = BitmapFactory.decodeResource(this.getResources(), id);
+    width = bmpInput.getWidth();
+    height = bmpInput.getHeight();
+
+    // Allocate output image
+    bmpOutput = Bitmap.createBitmap(width, height, bmpInput.getConfig());
+
+    // Update view
+    imageResult.setImageBitmap(bmpInput);
+  }
+
   @Override
   public void onItemSelected(AdapterView<?> parent, View view,
                              int position, long id)
   {
-    filterIndex = position;
+    if (parent == filterSpinner)
+    {
+      filterIndex = position;
+    }
+    else if (parent == imageSpinner)
+    {
+      switch (position)
+      {
+      case 0:
+        loadImage(R.drawable.peppers);
+        break;
+      case 1:
+        loadImage(R.drawable.baboon);
+        break;
+      case 2:
+        loadImage(R.drawable.lena);
+        break;
+      case 3:
+        loadImage(R.drawable.doughnuts);
+        break;
+      default:
+        return;
+      }
+    }
   }
 
   @Override
