@@ -47,6 +47,8 @@ namespace improsa
       "Finished in %.1lf ms (verification %s)",
       (end-start)*1e-3/iterations, passed ? "passed" : "failed");
 
+    halide_release(NULL);
+
     return passed;
   }
 
@@ -80,6 +82,8 @@ namespace improsa
     reportStatus(
       "Finished in %.1lf ms (verification %s)",
       (end-start)*1e-3/iterations, passed ? "passed" : "failed");
+
+    halide_release(NULL);
 
     return passed;
   }
