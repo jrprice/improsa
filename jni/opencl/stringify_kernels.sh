@@ -12,6 +12,7 @@ do
         echo "Skipping generation of OpenCL $name kernel"
         continue
     fi
+    echo "Generating OpenCL $name kernel"
 
     echo "const char *"$name"_kernel =" >$OUT
     sed -e 's/\\/\\\\/g;s/"/\\"/g;s/  /\\t/g;s/^/"/;s/$/\\n"/' $IN >>$OUT

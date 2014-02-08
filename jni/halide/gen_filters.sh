@@ -1,23 +1,24 @@
 #!/bin/bash
 
-filters=blur
+functions=blur
 
 if [ "$1" == clean ]
 then
-  for name in $filters
+  for name in $functions
   do
     rm -rf "$name"{,_cpu{.s,.h},_gpu{.s,.h}}
   done
   exit 0
 fi
 
-for name in $filters
+for name in $functions
 do
   if [ $name.cpp -ot $name ]
   then
     echo "Skipping generation of halide $name"
     continue
   fi
+  echo "Generating halide blur functions"
 
   g++ -lHalide -o $name $name.cpp
   if [ $? -ne 0 ]
