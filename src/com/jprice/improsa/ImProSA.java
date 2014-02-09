@@ -35,6 +35,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   {
     System.loadLibrary("improsa");
   }
+  private native void clearReferenceCache();
   private native String[] getFilterList();
 
   @Override
@@ -143,6 +144,9 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
 
     // Update view
     imageResult.setImageBitmap(bmpInput);
+
+    // Clear reference caches
+    clearReferenceCache();
   }
 
   @Override

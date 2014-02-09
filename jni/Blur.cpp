@@ -10,15 +10,6 @@ namespace improsa
   Blur::Blur() : Filter()
   {
     m_name = "Blur";
-    m_reference.data = NULL;
-  }
-
-  Blur::~Blur()
-  {
-    if (m_reference.data)
-    {
-      delete[] m_reference.data;
-    }
   }
 
   bool Blur::runHalideCPU(Image input, Image output)

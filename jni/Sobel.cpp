@@ -13,14 +13,6 @@ namespace improsa
     m_reference.data = NULL;
   }
 
-  Sobel::~Sobel()
-  {
-    if (m_reference.data)
-    {
-      delete[] m_reference.data;
-    }
-  }
-
   bool Sobel::runHalideCPU(Image input, Image output)
   {
     // Create halide buffers

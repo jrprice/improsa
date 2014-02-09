@@ -23,6 +23,16 @@ extern "C"
   };
   static const int numFilters = sizeof(filters) / sizeof(Filter*);
 
+  JNIEXPORT void JNICALL
+    Java_com_jprice_improsa_ImProSA_clearReferenceCache(
+      JNIEnv *env, jobject obj)
+  {
+    for (int i = 0; i < numFilters; i++)
+    {
+      filters[i]->clearReferenceCache();
+    }
+  }
+
   JNIEXPORT jobjectArray JNICALL
     Java_com_jprice_improsa_ImProSA_getFilterList(
       JNIEnv *env, jobject obj)

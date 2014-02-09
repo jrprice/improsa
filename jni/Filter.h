@@ -42,7 +42,9 @@ namespace improsa
   {
   public:
     Filter();
+    virtual ~Filter();
 
+    virtual void clearReferenceCache();
     virtual const char* getName() const;
 
     virtual bool runHalideCPU(Image input, Image output) = 0;
@@ -54,6 +56,7 @@ namespace improsa
 
   protected:
     const char *m_name;
+    Image m_reference;
     int (*m_statusCallback)(const char*, va_list args);
     void reportStatus(const char *format, ...) const;
     virtual bool verify(Image input, Image output, int tolerance=1);

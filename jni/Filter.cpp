@@ -12,6 +12,21 @@ namespace improsa
     m_context = 0;
     m_queue = 0;
     m_program = 0;
+    m_reference.data = NULL;
+  }
+
+  Filter::~Filter()
+  {
+    clearReferenceCache();
+  }
+
+  void Filter::clearReferenceCache()
+  {
+    if (m_reference.data)
+    {
+      delete[] m_reference.data;
+      m_reference.data = NULL;
+    }
   }
 
   const char* Filter::getName() const
