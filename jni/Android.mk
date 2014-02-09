@@ -6,6 +6,7 @@ LOCAL_CFLAGS    += -g -Wno-deprecated-declarations
 LOCAL_MODULE    := improsa
 LOCAL_SRC_FILES := improsa.cpp Filter.cpp
 LOCAL_SRC_FILES += Blur.cpp halide/blur_cpu.s halide/blur_gpu.s
+LOCAL_SRC_FILES += Sharpen.cpp halide/sharpen_cpu.s halide/sharpen_gpu.s
 LOCAL_SRC_FILES += Sobel.cpp halide/sobel_cpu.s halide/sobel_gpu.s
 LOCAL_LDLIBS    := -llog -ljnigraphics -lOpenCL
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kernels="blur sobel"
+kernels="blur sharpen sobel"
 
 for name in $kernels
 do

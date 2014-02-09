@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "Blur.h"
+#include "Sharpen.h"
 #include "Sobel.h"
 
 #define METHOD_REFERENCE  (1<<0)
@@ -19,6 +20,7 @@ extern "C"
   static Filter *filters[] =
   {
     new Blur(),
+    new Sharpen(),
     new Sobel()
   };
   static const int numFilters = sizeof(filters) / sizeof(Filter*);
