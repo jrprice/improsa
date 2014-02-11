@@ -30,7 +30,7 @@ halide:
 $(OBJDIR)/%.d: $(SRCDIR)/%.cpp prebuild $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -MM -MT $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$<) $< -MF $@
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)/%.d
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 $(OBJDIR):
@@ -41,6 +41,6 @@ clean:
 
 .PHONY: clean
 
-ifeq (0, $(words $(findstring $(MAKECMDGOALS), clean)))
+ifeq (0, $(words $(findstring $(MAKECMDGOALS), clean opencl halide)))
 -include $(DEPFILES)
 endif
