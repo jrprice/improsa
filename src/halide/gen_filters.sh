@@ -17,7 +17,7 @@ mkdir -p $OUTDIR
 for name in $functions
 do
   if [ $name.cpp -ot $OUTDIR/$name\_cpu.s ] && \
-     [ $name.cpp -ot $OUTPUT/$name\_gpu.s ]
+     [ $name.cpp -ot $OUTDIR/$name\_gpu.s ]
   then
     echo "Skipping generation of halide $name"
     continue

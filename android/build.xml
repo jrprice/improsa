@@ -115,7 +115,7 @@
             failonerror="true">
             <arg value="clean"/>
         </exec>
-        <delete dir="../jni/halide/"/>
+        <delete dir="jni/halide/"/>
         <delete>
             <fileset dir="../src/opencl/" includes="*.h"/>
         </delete>
