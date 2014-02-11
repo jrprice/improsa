@@ -1,13 +1,11 @@
 #include "common.h"
 #include <iostream>
 
-using namespace std;
-
 int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if (argc != 4)
   {
-    cout << "Usage: " << argv[0] << " cpu|gpu" << endl;
+    cout << "Usage: " << argv[0] << " cpu|gpu out_func out_prefix" << endl;
     return 1;
   }
 
@@ -47,18 +45,18 @@ int main(int argc, char *argv[])
   if (!strcmp(argv[1], "cpu"))
   {
     blur_y.parallel(y).vectorize(c, 4);
-    compile(blur_y, input, "blur_cpu");
   }
   else if (!strcmp(argv[1], "gpu"))
   {
     blur_y.cuda_tile(x, y, 16, 4);
-    compile(blur_y, input, "blur_gpu");
   }
   else
   {
     cout << "Invalid schedule type '" << argv[1] << "'" << endl;
     return 1;
   }
+
+  compile(blur_y, input, argv[2], argv[3]);
 
   return 0;
 }

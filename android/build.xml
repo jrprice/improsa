@@ -92,30 +92,32 @@
     <target name="-pre-build">
         <exec
             executable="./stringify_kernels.sh"
-            dir="jni/opencl"
+            dir="../src/opencl"
             failonerror="true"
         />
         <exec
             executable="./gen_filters.sh"
-            dir="jni/halide"
+            dir="../src/halide"
             failonerror="true">
             <env key="HL_TARGET" value="arm-32-android-opencl" />
+            <arg value="../../android/jni/halide"/>
         </exec>
-        <exec executable="ndk-build" failonerror="true"/>
+        <exec executable="ndk-build" failonerror="true" dir="jni"/>
     </target>
 
     <target name="clean" depends="android_rules.clean">
-        <exec executable="ndk-build" failonerror="true">
+        <exec executable="ndk-build" failonerror="true" dir="jni">
             <arg value="clean"/>
         </exec>
         <exec
             executable="./gen_filters.sh"
-            dir="jni/halide"
+            dir="../src/halide"
             failonerror="true">
             <arg value="clean"/>
         </exec>
+        <delete dir="../jni/halide/"/>
         <delete>
-            <fileset dir="jni/opencl/" includes="*.h"/>
+            <fileset dir="../src/opencl/" includes="*.h"/>
         </delete>
     </target>
 

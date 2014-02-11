@@ -1,13 +1,11 @@
 #include "common.h"
 #include <iostream>
 
-using namespace std;
-
 int main(int argc, char *argv[])
 {
-  if (argc != 2)
+  if (argc != 4)
   {
-    cout << "Usage: " << argv[0] << " cpu|gpu" << endl;
+    cout << "Usage: " << argv[0] << " cpu|gpu out_func out_prefix" << endl;
     return 1;
   }
 
@@ -55,18 +53,18 @@ int main(int argc, char *argv[])
   if (!strcmp(argv[1], "cpu"))
   {
     sobel.parallel(y).vectorize(c, 4);
-    compile(sobel, input, "sobel_cpu");
   }
   else if (!strcmp(argv[1], "gpu"))
   {
     sobel.cuda_tile(x, y, 16, 4);
-    compile(sobel, input, "sobel_gpu");
   }
   else
   {
     cout << "Invalid schedule type '" << argv[1] << "'" << endl;
     return 1;
   }
+
+  compile(sobel, input, argv[2], argv[3]);
 
   return 0;
 }

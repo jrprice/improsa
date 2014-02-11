@@ -1,6 +1,7 @@
 #include <Halide.h>
 
 using namespace Halide;
+using namespace std;
 
 Expr u8(Expr x)
 {
@@ -42,10 +43,10 @@ Expr f32(Expr x)
   return cast(Float(32), x);
 }
 
-void compile(Func func, ImageParam input, std::string name)
+void compile(Func func, ImageParam input, string fnName, string prefix)
 {
-  std::vector<Argument> args;
+  vector<Argument> args;
   args.push_back(input);
-  func.compile_to_assembly(name+".s", args, "halide_"+name);
-  func.compile_to_header(name+".h", args, "halide_"+name);
+  func.compile_to_assembly(prefix+".s", args, fnName);
+  func.compile_to_header(prefix+".h", args, fnName);
 }

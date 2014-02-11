@@ -11,9 +11,13 @@ then
   exit 0
 fi
 
+OUTDIR=${1:-.}
+mkdir -p $OUTDIR
+
 for name in $functions
 do
-  if [ $name.cpp -ot $name ]
+  if [ $name.cpp -ot $OUTDIR/$name\_cpu.s ] && \
+     [ $name.cpp -ot $OUTPUT/$name\_gpu.s ]
   then
     echo "Skipping generation of halide $name"
     continue
@@ -28,7 +32,7 @@ do
 
   for schedule in cpu gpu
   do
-    ./$name $schedule
+    ./$name $schedule halide_$name\_$schedule $OUTDIR/$name\_$schedule
     if [ $? -ne 0 ]
     then
       exit 1

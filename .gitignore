@@ -1,10 +1,18 @@
+# Android build output
 local.properties
 bin/
 gen/
 libs/
 obj/
+android/jni/halide/*.s
+android/jni/halide/*_cpu.h
+android/jni/halide/*_gpu.h
 
-jni/opencl/*.h
-jni/halide/*.s
-jni/halide/*_cpu.h
-jni/halide/*_gpu.h
+# Linux build output
+linux/improsa
+
+# Common build output
+src/opencl/*.h
+src/halide/blur
+src/halide/sharpen
+src/halide/sobel
