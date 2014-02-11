@@ -183,6 +183,7 @@ namespace improsa
       {-1, -1, -1}
     };
 
+    reportStatus("Running reference");
     for (int y = 0; y < output.height; y++)
     {
       for (int x = 0; x < output.width; x++)
@@ -204,7 +205,9 @@ namespace improsa
         setPixel(output, x, y, 2, b/8 + getPixel(input, x, y, 2));
         setPixel(output, x, y, 3, getPixel(input, x, y, 3));
       }
+#if SHOW_REFERENCE_PROGRESS == 1
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
+#endif
     }
     reportStatus("Finished reference");
 

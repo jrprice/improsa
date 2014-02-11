@@ -183,6 +183,7 @@ namespace improsa
       {1, 2, 1}
     };
 
+    reportStatus("Running reference");
     for (int y = 0; y < output.height; y++)
     {
       for (int x = 0; x < output.width; x++)
@@ -200,7 +201,9 @@ namespace improsa
         float g_mag = sqrt(g_x*g_x + g_y*g_y);
         setPixelGrayscale(output, x, y, g_mag);
       }
+#if SHOW_REFERENCE_PROGRESS == 1
       reportStatus("Completed %.1f%% of reference", (100.f*y)/(input.height-1));
+#endif
     }
     reportStatus("Finished reference");
 

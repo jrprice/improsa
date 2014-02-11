@@ -5,6 +5,7 @@ include $(CLEAR_VARS)
 SRC_PATH := ../../src
 
 LOCAL_CFLAGS    += -I$(SRC_PATH) -g -Wno-deprecated-declarations
+LOCAL_CFLAGS    += -DSHOW_REFERENCE_PROGRESS=1
 LOCAL_MODULE    := improsa
 LOCAL_SRC_FILES := improsa.cpp \
 	$(SRC_PATH)/Filter.cpp \
