@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -19,6 +20,8 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   Bitmap bmpInput, bmpOutput;
   ImageView imageResult;
   Spinner filterSpinner, imageSpinner;
+  CheckBox wgsizeCheckBox;
+  Spinner wgxSpinner, wgySpinner;
   TextView status;
   int width, height;
   int filterIndex;
@@ -37,6 +40,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   }
   private native void clearReferenceCache();
   private native String[] getFilterList();
+  private native void setWorkGroupSize(int x, int y);
 
   @Override
   public void onCreate(Bundle savedInstanceState)
@@ -77,6 +81,24 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     imageSpinner.setAdapter(adapter);
     imageSpinner.setOnItemSelectedListener(this);
     imageSpinner.setSelection(1);
+
+    // Initialise work-group size spinners
+    Integer[] wgsizes = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
+    ArrayAdapter<Integer> intAdapter = new ArrayAdapter<Integer>(
+      this, android.R.layout.simple_spinner_item, wgsizes);
+    intAdapter.setDropDownViewResource(
+      android.R.layout.simple_spinner_dropdown_item);
+    wgxSpinner = (Spinner)findViewById(R.id.wgxSpinner);
+    wgxSpinner.setAdapter(intAdapter);
+    wgxSpinner.setOnItemSelectedListener(this);
+    wgxSpinner.setEnabled(false);
+    wgySpinner = (Spinner)findViewById(R.id.wgySpinner);
+    wgySpinner.setAdapter(intAdapter);
+    wgySpinner.setOnItemSelectedListener(this);
+    wgySpinner.setEnabled(false);
+    wgsizeCheckBox = ((CheckBox)findViewById(R.id.wgsize));
+    wgsizeCheckBox.setChecked(false);
+    setWorkGroupSize(0, 0);
 
     // Initialize status text
     status = (TextView)findViewById(R.id.status);
@@ -177,6 +199,13 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
         return;
       }
     }
+    else if ((parent == wgxSpinner || parent == wgySpinner) &&
+             wgsizeCheckBox.isChecked())
+    {
+      setWorkGroupSize(
+        (Integer)wgxSpinner.getSelectedItem(),
+        (Integer)wgySpinner.getSelectedItem());
+    }
   }
 
   @Override
@@ -208,6 +237,23 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
         break;
       default:
         return;
+    }
+  }
+
+  public void onWGSizeChecked(View view)
+  {
+    boolean checked = wgsizeCheckBox.isChecked();
+    wgxSpinner.setEnabled(checked);
+    wgySpinner.setEnabled(checked);
+    if (checked)
+    {
+      setWorkGroupSize(
+        (Integer)wgxSpinner.getSelectedItem(),
+        (Integer)wgySpinner.getSelectedItem());
+    }
+    else
+    {
+      setWorkGroupSize(0, 0);
     }
   }
 

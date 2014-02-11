@@ -25,6 +25,11 @@ extern "C"
   };
   static const int numFilters = sizeof(filters) / sizeof(Filter*);
 
+  static Filter::Params params =
+  {
+    {0, 0}
+  };
+
   JNIEXPORT void JNICALL
     Java_com_jprice_improsa_ImProSA_clearReferenceCache(
       JNIEnv *env, jobject obj)
@@ -50,6 +55,14 @@ extern "C"
       env->DeleteLocalRef(name);
     }
     return list;
+  }
+
+  JNIEXPORT void JNICALL
+    Java_com_jprice_improsa_ImProSA_setWorkGroupSize(
+      JNIEnv *env, jobject obj, jint x, jint y)
+  {
+    params.wgsize[0] = x;
+    params.wgsize[1] = y;
   }
 
   // Handles for sending status updates to GUI
@@ -120,13 +133,13 @@ extern "C"
         success = filter->runReference(input, output);
         break;
       case METHOD_HALIDE_CPU:
-        success = filter->runHalideCPU(input, output);
+        success = filter->runHalideCPU(input, output, params);
         break;
       case METHOD_HALIDE_GPU:
-        success = filter->runHalideGPU(input, output);
+        success = filter->runHalideGPU(input, output, params);
         break;
       case METHOD_OPENCL:
-        success = filter->runOpenCL(input, output);
+        success = filter->runOpenCL(input, output, params);
         break;
       default:
         status("Invalid filter method (%d).", filterMethod);

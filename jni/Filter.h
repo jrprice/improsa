@@ -41,15 +41,24 @@ namespace improsa
   class Filter
   {
   public:
+    typedef struct
+    {
+      size_t wgsize[2];
+    } Params;
+
+  public:
     Filter();
     virtual ~Filter();
 
     virtual void clearReferenceCache();
     virtual const char* getName() const;
 
-    virtual bool runHalideCPU(Image input, Image output) = 0;
-    virtual bool runHalideGPU(Image input, Image output) = 0;
-    virtual bool runOpenCL(Image input, Image output) = 0;
+    virtual bool runHalideCPU(Image input, Image output,
+                              const Params& params) = 0;
+    virtual bool runHalideGPU(Image input, Image output,
+                              const Params& params) = 0;
+    virtual bool runOpenCL(Image input, Image output,
+                           const Params& params) = 0;
     virtual bool runReference(Image input, Image output) = 0;
 
     virtual void setStatusCallback(int (*callback)(const char*, va_list args));

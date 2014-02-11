@@ -12,7 +12,7 @@ namespace improsa
     m_name = "Blur";
   }
 
-  bool Blur::runHalideCPU(Image input, Image output)
+  bool Blur::runHalideCPU(Image input, Image output, const Params& params)
   {
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
@@ -43,7 +43,7 @@ namespace improsa
     return passed;
   }
 
-  bool Blur::runHalideGPU(Image input, Image output)
+  bool Blur::runHalideGPU(Image input, Image output, const Params& params)
   {
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
@@ -79,7 +79,7 @@ namespace improsa
     return passed;
   }
 
-  bool Blur::runOpenCL(Image input, Image output)
+  bool Blur::runOpenCL(Image input, Image output, const Params& params)
   {
     if (!initCL(blur_kernel, "-cl-fast-relaxed-math"))
     {
@@ -117,7 +117,12 @@ namespace improsa
 
     reportStatus("Running OpenCL kernel");
 
-    size_t global[2] = {output.width, output.height};
+    const size_t global[2] = {output.width, output.height};
+    const size_t *local = NULL;
+    if (params.wgsize[0] && params.wgsize[1])
+    {
+      local = params.wgsize;
+    }
 
     // Timed runs
     int iterations = 8;
@@ -125,7 +130,7 @@ namespace improsa
     for (int i = 0; i < iterations + 1; i++)
     {
       err = clEnqueueNDRangeKernel(
-        m_queue, kernel, 2, NULL, global, NULL, 0, NULL, NULL);
+        m_queue, kernel, 2, NULL, global, local, 0, NULL, NULL);
       CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
 
       // Start timing after warm-up run

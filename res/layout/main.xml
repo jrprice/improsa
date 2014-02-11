@@ -83,6 +83,57 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         />
+
+      <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scaleX="0.85"
+        android:scaleY="0.85"
+        >
+        <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          >
+          <CheckBox android:id="@+id/wgsize"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onWGSizeChecked"
+            android:text="OpenCL work-group size"
+            android:textSize="12dp"
+            />
+        </LinearLayout>
+        <LinearLayout
+          android:orientation="horizontal"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:scaleX="0.85"
+          android:scaleY="0.85"
+          >
+          <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/wgxSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_default"
+            />
+          <TextView
+            android:text="x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+          <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/wgySpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:drawable/btn_default"
+            />
+        </LinearLayout>
+      </LinearLayout>
+
     </LinearLayout>
 
   </LinearLayout>
