@@ -6,7 +6,7 @@ SUFFIXES += .d
 
 CXX      = g++
 CXXFLAGS = -I$(SRCDIR) -std=c++11 -O2
-LDFLAGS  = -lOpenCL
+LDFLAGS  = -lOpenCL -lpthread
 MODULES  = Filter Blur Sharpen Sobel
 OBJECTS  = $(MODULES:%=$(OBJDIR)/%.o)
 SOURCES  = $(MODULES:%=$(SRCDIR)/%.cpp)
