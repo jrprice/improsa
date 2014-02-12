@@ -12,7 +12,7 @@ OBJECTS  = $(MODULES:%=$(OBJDIR)/%.o)
 SOURCES  = $(MODULES:%=$(SRCDIR)/%.cpp)
 DEPFILES = $(MODULES:%=$(OBJDIR)/%.d)
 
-all: $(OBJDIR) $(EXE)
+all: prebuild $(OBJDIR) $(EXE)
 
 $(EXE): $(OBJECTS) improsa.cpp
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) halide/*.s -o $(EXE) improsa.cpp
@@ -27,7 +27,7 @@ opencl:
 halide:
 	HL_TARGET=x86-64-opencl ./gen_filters.sh ../../linux/halide
 
-$(OBJDIR)/%.d: $(SRCDIR)/%.cpp prebuild $(OBJDIR)
+$(OBJDIR)/%.d: $(SRCDIR)/%.cpp $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -MM -MT $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$<) $< -MF $@
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
