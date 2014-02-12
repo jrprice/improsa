@@ -5,7 +5,7 @@ OBJDIR=obj
 SUFFIXES += .d
 
 CXX      = g++
-CXXFLAGS = -I$(SRCDIR) -O2
+CXXFLAGS = -I$(SRCDIR) -O2 -DCL_USE_DEPRECATED_OPENCL_1_1_APIS
 LDFLAGS  = -lOpenCL -lpthread
 MODULES  = Filter Blur Sharpen Sobel
 OBJECTS  = $(MODULES:%=$(OBJDIR)/%.o)
