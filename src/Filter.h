@@ -35,7 +35,7 @@ namespace improsa
   typedef struct
   {
     unsigned char *data;
-    int width, height;
+    size_t width, height;
   } Image;
 
   class Filter
