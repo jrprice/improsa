@@ -8,10 +8,10 @@
 #include "Sharpen.h"
 #include "Sobel.h"
 
-#define METHOD_REFERENCE  (1<<0)
-#define METHOD_HALIDE_CPU (1<<1)
-#define METHOD_HALIDE_GPU (1<<2)
-#define METHOD_OPENCL     (1<<3)
+#define METHOD_REFERENCE  (1<<1)
+#define METHOD_HALIDE_CPU (1<<2)
+#define METHOD_HALIDE_GPU (1<<3)
+#define METHOD_OPENCL     (1<<4)
 
 using namespace improsa;
 

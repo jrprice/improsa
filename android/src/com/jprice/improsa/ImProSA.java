@@ -29,10 +29,10 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
 
   private static final String TAG = "improsa";
 
-  private static final int METHOD_REFERENCE  = (1<<0);
-  private static final int METHOD_HALIDE_CPU = (1<<1);
-  private static final int METHOD_HALIDE_GPU = (1<<2);
-  private static final int METHOD_OPENCL     = (1<<3);
+  private static final int METHOD_REFERENCE  = (1<<1);
+  private static final int METHOD_HALIDE_CPU = (1<<2);
+  private static final int METHOD_HALIDE_GPU = (1<<3);
+  private static final int METHOD_OPENCL     = (1<<4);
 
   static
   {
