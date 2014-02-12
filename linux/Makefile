@@ -28,7 +28,7 @@ halide:
 	HL_TARGET=x86-64-opencl ./gen_filters.sh ../../linux/halide
 
 $(OBJDIR)/%.d: $(SRCDIR)/%.cpp $(OBJDIR)
-	$(CXX) $(CXXFLAGS) -MM -MT $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$<) $< -MF $@
+	$(CXX) $(CXXFLAGS) -MM -MT $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$<) $< -MF $@ 2>/dev/null
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -o $@ -c $<
