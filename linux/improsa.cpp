@@ -16,23 +16,25 @@
 using namespace improsa;
 using namespace std;
 
+struct _options_
+{
+  map<string, Filter*> filters;
+  map<string, unsigned int> methods;
+  _options_()
+  {
+    filters["blur"] = new Blur();
+    filters["sharpen"] = new Sharpen();
+    filters["sobel"] = new Sobel();
+
+    methods["reference"] = METHOD_REFERENCE;
+    methods["halide_cpu"] = METHOD_HALIDE_CPU;
+    methods["halide_gpu"] = METHOD_HALIDE_GPU;
+    methods["opencl"] = METHOD_OPENCL;
+  }
+} Options;
+
 void printUsage();
 int updateStatus(const char *format, va_list args);
-
-map<string, Filter*> m_filters =
-{
-  {"blur",    new Blur()},
-  {"sharpen", new Sharpen()},
-  {"sobel",   new Sobel()},
-};
-
-map<string, unsigned int> m_methods =
-{
-  {"reference",  METHOD_REFERENCE},
-  {"halide_cpu", METHOD_HALIDE_CPU},
-  {"halide_gpu", METHOD_HALIDE_GPU},
-  {"opencl",     METHOD_OPENCL},
-};
 
 int main(int argc, char *argv[])
 {
@@ -43,13 +45,13 @@ int main(int argc, char *argv[])
   // Parse arguments
   for (int i = 1; i < argc; i++)
   {
-    if (m_filters.find(argv[i]) != m_filters.end())
+    if (!filter && Options.filters.find(argv[i]) != Options.filters.end())
     {
-      filter = m_filters[argv[i]];
+      filter = Options.filters[argv[i]];
     }
-    else if (m_methods.find(argv[i]) != m_methods.end())
+    else if (!method && Options.methods.find(argv[i]) != Options.methods.end())
     {
-      method = m_methods[argv[i]];
+      method = Options.methods[argv[i]];
     }
     else
     {
@@ -116,14 +118,14 @@ void printUsage()
 
   cout << endl << "Where FILTER is one of:" << endl;
   map<string, Filter*>::iterator fItr;
-  for (fItr = m_filters.begin(); fItr != m_filters.end(); fItr++)
+  for (fItr = Options.filters.begin(); fItr != Options.filters.end(); fItr++)
   {
     cout << "\t" << fItr->first << endl;
   }
 
   cout << endl << "Where METHOD is one of:" << endl;
   map<string, unsigned int>::iterator mItr;
-  for (mItr = m_methods.begin(); mItr != m_methods.end(); mItr++)
+  for (mItr = Options.methods.begin(); mItr != Options.methods.end(); mItr++)
   {
     cout << "\t" << mItr->first << endl;
   }
