@@ -2,8 +2,10 @@
 
 #include "Sobel.h"
 #include "opencl/sobel.h"
+#if ENABLE_HALIDE
 #include "halide/sobel_cpu.h"
 #include "halide/sobel_gpu.h"
+#endif
 
 namespace improsa
 {
@@ -15,6 +17,7 @@ namespace improsa
 
   bool Sobel::runHalideCPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -42,10 +45,15 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Sobel::runHalideGPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -78,6 +86,10 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Sobel::runOpenCL(Image input, Image output, const Params& params)

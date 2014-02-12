@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="ImProSA" default="help">
+<project name="ImProSA"
+         default="help"
+         xmlns:if="ant:if">
 
     <!-- The local.properties file is created and updated by the 'android' tool.
          It contains the path to the SDK. It should *NOT* be checked into
@@ -89,6 +91,16 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <condition property="ENABLE_HALIDE" value="true">
+        <or>
+            <available file=".halide"/>
+            <and>
+                <isset property="HALIDE"/>
+                <equals arg1="${HALIDE}" arg2="1"/>
+            </and>
+        </or>
+    </condition>
+
     <target name="-pre-build">
         <exec
             executable="./stringify_kernels.sh"
@@ -96,13 +108,16 @@
             failonerror="true"
         />
         <exec
+            if:true="${ENABLE_HALIDE}"
             executable="./gen_filters.sh"
             dir="../src/halide"
             failonerror="true">
             <env key="HL_TARGET" value="arm-32-android-opencl" />
             <arg value="../../android/jni/halide"/>
         </exec>
-        <exec executable="ndk-build" failonerror="true" dir="jni"/>
+        <exec executable="ndk-build" failonerror="true" dir="jni">
+            <arg value="HALIDE=1" if:true="${ENABLE_HALIDE}"/>
+        </exec>
     </target>
 
     <target name="clean" depends="android_rules.clean">

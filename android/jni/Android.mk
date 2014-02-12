@@ -10,14 +10,20 @@ LOCAL_MODULE    := improsa
 LOCAL_SRC_FILES := improsa.cpp \
 	$(SRC_PATH)/Filter.cpp \
 	$(SRC_PATH)/Blur.cpp \
+	$(SRC_PATH)/Sharpen.cpp \
+	$(SRC_PATH)/Sobel.cpp
+
+ifeq ($(HALIDE),1)
+LOCAL_CFLAGS    += -DENABLE_HALIDE=1
+LOCAL_SRC_FILES += \
 	halide/blur_cpu.s \
 	halide/blur_gpu.s \
-	$(SRC_PATH)/Sharpen.cpp \
 	halide/sharpen_cpu.s \
 	halide/sharpen_gpu.s \
-	$(SRC_PATH)/Sobel.cpp \
 	halide/sobel_cpu.s \
 	halide/sobel_gpu.s
+endif
+
 LOCAL_LDLIBS := -llog -ljnigraphics -lOpenCL
 
 include $(BUILD_SHARED_LIBRARY)

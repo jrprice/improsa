@@ -2,8 +2,10 @@
 
 #include "Blur.h"
 #include "opencl/blur.h"
+#if ENABLE_HALIDE
 #include "halide/blur_cpu.h"
 #include "halide/blur_gpu.h"
+#endif
 
 namespace improsa
 {
@@ -14,6 +16,7 @@ namespace improsa
 
   bool Blur::runHalideCPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -41,10 +44,15 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Blur::runHalideGPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -77,6 +85,10 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Blur::runOpenCL(Image input, Image output, const Params& params)

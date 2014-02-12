@@ -2,8 +2,10 @@
 
 #include "Sharpen.h"
 #include "opencl/sharpen.h"
+#if ENABLE_HALIDE
 #include "halide/sharpen_cpu.h"
 #include "halide/sharpen_gpu.h"
+#endif
 
 namespace improsa
 {
@@ -15,6 +17,7 @@ namespace improsa
 
   bool Sharpen::runHalideCPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -42,10 +45,15 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Sharpen::runHalideGPU(Image input, Image output, const Params& params)
   {
+#if ENABLE_HALIDE
     // Create halide buffers
     buffer_t inputBuffer = createHalideBuffer(input);
     buffer_t outputBuffer = createHalideBuffer(output);
@@ -78,6 +86,10 @@ namespace improsa
     halide_release(NULL);
 
     return passed;
+#else
+    reportStatus("Halide not enabled during build.");
+    return false;
+#endif
   }
 
   bool Sharpen::runOpenCL(Image input, Image output, const Params& params)

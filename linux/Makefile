@@ -12,19 +12,32 @@ OBJECTS  = $(MODULES:%=$(OBJDIR)/%.o)
 SOURCES  = $(MODULES:%=$(SRCDIR)/%.cpp)
 DEPFILES = $(MODULES:%=$(OBJDIR)/%.d)
 
+ifneq ($(wildcard .halide),)
+	HALIDE = 1
+endif
+ifeq ($(HALIDE),1)
+	CXXFLAGS += -DENABLE_HALIDE
+	HALIDE_FILES = halide/*.s
+endif
+
 all: prebuild $(OBJDIR) $(EXE)
 
+halide:
+	$(MAKE) all HALIDE=1
+
 $(EXE): $(OBJECTS) improsa.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) halide/*.s -o $(EXE) improsa.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(HALIDE_FILES) $(OBJECTS) -o $(EXE) improsa.cpp
 
 prebuild:
-	$(MAKE) -C ../src/opencl -f $(shell pwd)/Makefile opencl
-	$(MAKE) -C ../src/halide -f $(shell pwd)/Makefile halide
+	$(MAKE) -C ../src/opencl -f $(shell pwd)/Makefile prebuild_opencl
+ifeq ($(HALIDE),1)
+	$(MAKE) -C ../src/halide -f $(shell pwd)/Makefile prebuild_halide
+endif
 
-opencl:
+prebuild_opencl:
 	./stringify_kernels.sh
 
-halide:
+prebuild_halide:
 	HL_TARGET=x86-64-opencl ./gen_filters.sh ../../linux/halide
 
 $(OBJDIR)/%.d: $(SRCDIR)/%.cpp $(OBJDIR)

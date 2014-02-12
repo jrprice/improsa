@@ -10,9 +10,13 @@ android/jni/halide/*_gpu.h
 
 # Linux build output
 linux/improsa
+linux/halide
 
 # Common build output
 src/opencl/*.h
 src/halide/blur
 src/halide/sharpen
 src/halide/sobel
+
+# Misc
+.halide

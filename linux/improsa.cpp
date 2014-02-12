@@ -27,9 +27,12 @@ struct _options_
     filters["sobel"] = new Sobel();
 
     methods["reference"] = METHOD_REFERENCE;
+    methods["opencl"] = METHOD_OPENCL;
+
+#if ENABLE_HALIDE
     methods["halide_cpu"] = METHOD_HALIDE_CPU;
     methods["halide_gpu"] = METHOD_HALIDE_GPU;
-    methods["opencl"] = METHOD_OPENCL;
+#endif
   }
 } Options;
 
