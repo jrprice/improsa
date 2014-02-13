@@ -93,7 +93,7 @@ namespace improsa
 
   bool Blur::runOpenCL(Image input, Image output, const Params& params)
   {
-    if (!initCL(blur_kernel, "-cl-fast-relaxed-math"))
+    if (!initCL(params, blur_kernel, "-cl-fast-relaxed-math"))
     {
       return false;
     }

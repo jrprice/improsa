@@ -25,10 +25,7 @@ extern "C"
   };
   static const int numFilters = sizeof(filters) / sizeof(Filter*);
 
-  static Filter::Params params =
-  {
-    {0, 0}
-  };
+  static Filter::Params params;
 
   JNIEXPORT void JNICALL
     Java_com_jprice_improsa_ImProSA_clearReferenceCache(
@@ -139,6 +136,7 @@ extern "C"
         success = filter->runHalideGPU(input, output, params);
         break;
       case METHOD_OPENCL:
+        params.type = CL_DEVICE_TYPE_GPU;
         success = filter->runOpenCL(input, output, params);
         break;
       default:

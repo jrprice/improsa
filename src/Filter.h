@@ -41,9 +41,18 @@ namespace improsa
   class Filter
   {
   public:
-    typedef struct
+    typedef struct _Params_
     {
+      cl_device_type type;
+      cl_uint platformIndex, deviceIndex;
       size_t wgsize[2];
+      _Params_()
+      {
+        type = CL_DEVICE_TYPE_ALL;
+        platformIndex = 0;
+        deviceIndex = 0;
+        wgsize[0] = wgsize[1] = 0;
+      }
     } Params;
 
   public:
@@ -74,7 +83,7 @@ namespace improsa
     cl_context m_context;
     cl_command_queue m_queue;
     cl_program m_program;
-    bool initCL(const char *source, const char *options);
+    bool initCL(const Params& params, const char *source, const char *options);
     void releaseCL();
   };
 

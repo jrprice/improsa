@@ -94,7 +94,7 @@ namespace improsa
 
   bool Sharpen::runOpenCL(Image input, Image output, const Params& params)
   {
-    if (!initCL(sharpen_kernel, "-cl-fast-relaxed-math"))
+    if (!initCL(params, sharpen_kernel, "-cl-fast-relaxed-math"))
     {
       return false;
     }

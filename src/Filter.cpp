@@ -34,19 +34,37 @@ namespace improsa
     return m_name;
   }
 
-  bool Filter::initCL(const char *source, const char *options)
+  bool Filter::initCL(const Params& params,
+                      const char *source, const char *options)
   {
     // Ensure no existing context
     releaseCL();
 
     cl_int err;
+    cl_uint numPlatforms, numDevices;
 
-    cl_platform_id platform;
-    err = clGetPlatformIDs(1, &platform, NULL);
+    cl_platform_id platform, platforms[params.platformIndex+1];
+    err = clGetPlatformIDs(params.platformIndex+1, platforms, &numPlatforms);
     CHECK_ERROR_OCL(err, "getting platforms", return false);
+    if (params.platformIndex >= numPlatforms)
+    {
+      reportStatus("Platform index %d out of range (%d platforms found)",
+        params.platformIndex, numPlatforms);
+      return false;
+    }
+    platform = platforms[params.platformIndex];
 
-    err = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 1, &m_device, NULL);
+    cl_device_id devices[params.deviceIndex+1];
+    err = clGetDeviceIDs(platform, params.type,
+                         params.deviceIndex+1, devices, &numDevices);
     CHECK_ERROR_OCL(err, "getting devices", return false);
+    if (params.deviceIndex >= numDevices)
+    {
+      reportStatus("Device index %d out of range (%d devices found)",
+        params.deviceIndex, numDevices);
+      return false;
+    }
+    m_device = devices[params.deviceIndex];
 
     char name[64];
     clGetDeviceInfo(m_device, CL_DEVICE_NAME, 64, name, NULL);

@@ -94,7 +94,7 @@ namespace improsa
 
   bool Sobel::runOpenCL(Image input, Image output, const Params& params)
   {
-    if (!initCL(sobel_kernel, "-cl-fast-relaxed-math"))
+    if (!initCL(params, sobel_kernel, "-cl-fast-relaxed-math"))
     {
       return false;
     }
