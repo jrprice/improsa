@@ -114,9 +114,9 @@ int main(int argc, char *argv[])
   {
     for (int x = 0; x < size; x++)
     {
-      setPixel(input, x, y, 0, rand()/RAND_MAX);
-      setPixel(input, x, y, 1, rand()/RAND_MAX);
-      setPixel(input, x, y, 2, rand()/RAND_MAX);
+      setPixel(input, x, y, 0, rand()/(float)RAND_MAX);
+      setPixel(input, x, y, 1, rand()/(float)RAND_MAX);
+      setPixel(input, x, y, 2, rand()/(float)RAND_MAX);
       setPixel(input, x, y, 3, 255);
     }
   }
