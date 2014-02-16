@@ -25,8 +25,8 @@ all: prebuild $(OBJDIR) $(EXE)
 halide:
 	$(MAKE) all HALIDE=1
 
-$(EXE): $(OBJECTS) improsa.cpp
-	$(CXX) $(CXXFLAGS) $(HALIDE_FILES) $^ $(LDFLAGS) -o $@
+$(EXE): $(OBJECTS) $(HALIDE_FILES) improsa.cpp
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 prebuild:
 	$(MAKE) -C ../src/opencl -f $(shell pwd)/Makefile prebuild_opencl
