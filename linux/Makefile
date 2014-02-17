@@ -17,7 +17,9 @@ ifneq ($(wildcard .halide),)
 endif
 ifeq ($(HALIDE),1)
 	CXXFLAGS += -DENABLE_HALIDE
-	HALIDE_FILES = halide/*.s
+	FILTERS = bilateral blur sharpen sobel
+	HALIDE_FILES = $(FILTERS:%=halide/%_cpu.s)
+	HALIDE_FILES += $(FILTERS:%=halide/%_gpu.s)
 endif
 
 all: prebuild $(OBJDIR) $(EXE)
