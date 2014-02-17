@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "Bilateral.h"
 #include "Blur.h"
 #include "Sharpen.h"
 #include "Sobel.h"
@@ -19,6 +20,7 @@ extern "C"
 {
   static Filter *filters[] =
   {
+    new Bilateral(),
     new Blur(),
     new Sharpen(),
     new Sobel()

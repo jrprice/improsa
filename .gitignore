@@ -14,6 +14,7 @@ linux/halide
 
 # Common build output
 src/opencl/*.h
+src/halide/bilateral
 src/halide/blur
 src/halide/sharpen
 src/halide/sobel

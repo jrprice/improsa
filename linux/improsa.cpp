@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 
+#include "Bilateral.h"
 #include "Blur.h"
 #include "Sharpen.h"
 #include "Sobel.h"
@@ -22,6 +23,7 @@ struct _options_
   map<string, unsigned int> methods;
   _options_()
   {
+    filters["bilateral"] = new Bilateral();
     filters["blur"] = new Blur();
     filters["sharpen"] = new Sharpen();
     filters["sobel"] = new Sobel();

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-kernels="blur sharpen sobel"
+kernels="bilateral blur sharpen sobel"
 
 for name in $kernels
 do

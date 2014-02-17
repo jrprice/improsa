@@ -7,7 +7,7 @@ SUFFIXES += .d
 CXX      = g++
 CXXFLAGS = -I$(SRCDIR) -O2 -DCL_USE_DEPRECATED_OPENCL_1_1_APIS
 LDFLAGS  = -lOpenCL -lpthread
-MODULES  = Filter Blur Sharpen Sobel
+MODULES  = Filter Bilateral Blur Sharpen Sobel
 OBJECTS  = $(MODULES:%=$(OBJDIR)/%.o)
 SOURCES  = $(MODULES:%=$(SRCDIR)/%.cpp)
 DEPFILES = $(MODULES:%=$(OBJDIR)/%.d)

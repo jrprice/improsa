@@ -1,6 +1,6 @@
 #!/bin/bash
 
-functions="blur sharpen sobel"
+functions="bilateral blur sharpen sobel"
 
 if [ "$1" == clean ]
 then
