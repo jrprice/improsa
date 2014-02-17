@@ -24,10 +24,10 @@ namespace improsa
     reportStatus("Running Halide CPU filter");
 
     // Warm-up run
-    //halide_bilateral_cpu(&inputBuffer, &outputBuffer);
+    halide_bilateral_cpu(&inputBuffer, &outputBuffer);
 
     // Timed runs
-    const int iterations = 1;
+    const int iterations = 8;
     double start = getCurrentTime();
     for (int i = 0; i < iterations; i++)
     {
