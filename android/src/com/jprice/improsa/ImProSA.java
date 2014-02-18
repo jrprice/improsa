@@ -294,7 +294,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     }
     else if (parent == iterationsSpinner)
     {
-      setIterations(position+1);
+      setIterations(1<<position);
     }
   }
 
