@@ -61,6 +61,23 @@ int main(int argc, char *argv[])
     {
       method = Options.methods[argv[i]];
     }
+    else if (!strcmp(argv[i], "-i"))
+    {
+      ++i;
+      if (i >= argc)
+      {
+        cout << "Number of iterations required with -i." << endl;
+        exit(1);
+      }
+
+      char *next;
+      params.iterations = strtoul(argv[i], &next, 10);
+      if (strlen(next))
+      {
+        cout << "Invalid number of iterations." << endl;
+        exit(1);
+      }
+    }
     else if (!strcmp(argv[i], "-noverify"))
     {
       params.verify = false;
@@ -205,7 +222,7 @@ void printUsage()
 {
   cout << endl <<
     "Usage: improsa SIZE FILTER METHOD "
-    "[-noverify] [-cldevice P:D]";
+    "[-i ITERATIONS] [-noverify] [-cldevice P:D]";
   cout << endl << "       improsa -clinfo" << endl;
 
   cout << endl << "Where FILTER is one of:" << endl;

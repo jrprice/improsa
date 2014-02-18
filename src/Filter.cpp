@@ -115,7 +115,7 @@ namespace improsa
       }
     }
 
-    double runtime = ((m_endTime-m_startTime)*1e-3)/8; // TODO: iterations
+    double runtime = ((m_endTime-m_startTime)*1e-3)/params.iterations;
     reportStatus("Finished in %.1lf ms %s", runtime, verifyStr);
 
     return success;

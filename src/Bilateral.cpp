@@ -27,9 +27,8 @@ namespace improsa
     halide_bilateral_cpu(&inputBuffer, &outputBuffer);
 
     // Timed runs
-    const int iterations = 8;
     startTiming();
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i < params.iterations; i++)
     {
       halide_bilateral_cpu(&inputBuffer, &outputBuffer);
     }
@@ -59,9 +58,8 @@ namespace improsa
     halide_dev_sync(NULL);
 
     // Timed runs
-    const int iterations = 8;
     startTiming();
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i < params.iterations; i++)
     {
       halide_bilateral_gpu(&inputBuffer, &outputBuffer);
     }
@@ -124,8 +122,7 @@ namespace improsa
     }
 
     // Timed runs
-    int iterations = 8;
-    for (int i = 0; i < iterations + 1; i++)
+    for (int i = 0; i < params.iterations + 1; i++)
     {
       err = clEnqueueNDRangeKernel(
         m_queue, kernel, 2, NULL, global, local, 0, NULL, NULL);

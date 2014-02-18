@@ -45,6 +45,7 @@ namespace improsa
     {
       // General parameters
       bool verify;
+      unsigned int iterations;
 
       // OpenCL parameters
       cl_device_type type;
@@ -54,6 +55,7 @@ namespace improsa
       _Params_()
       {
         verify = true;
+        iterations = 8;
 
         type = CL_DEVICE_TYPE_ALL;
         platformIndex = 0;
