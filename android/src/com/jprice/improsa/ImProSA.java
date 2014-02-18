@@ -40,6 +40,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   }
   private native void clearReferenceCache();
   private native String[] getFilterList();
+  private native void setIterations(int i);
   private native void setVerificationEnabled(boolean enabled);
   private native void setWorkGroupSize(int x, int y);
 
@@ -150,6 +151,13 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
           return;
         }
         setWorkGroupSize(wgsize[0], wgsize[1]);
+      }
+
+      // Check for optional number of iterations
+      int iterations = getIntent().getIntExtra("ITERATIONS", 0);
+      if (iterations > 0)
+      {
+        setIterations(iterations);
       }
 
       // Check for verification flag

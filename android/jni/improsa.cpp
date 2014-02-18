@@ -57,6 +57,13 @@ extern "C"
   }
 
   JNIEXPORT void JNICALL
+    Java_com_jprice_improsa_ImProSA_setIterations(
+      JNIEnv *env, jobject obj, jint i)
+  {
+    params.iterations = i;
+  }
+
+  JNIEXPORT void JNICALL
     Java_com_jprice_improsa_ImProSA_setVerificationEnabled(
       JNIEnv *env, jobject obj, jboolean enabled)
   {
