@@ -43,11 +43,18 @@ namespace improsa
   public:
     typedef struct _Params_
     {
+      // General parameters
+      bool verify;
+
+      // OpenCL parameters
       cl_device_type type;
       cl_uint platformIndex, deviceIndex;
       size_t wgsize[2];
+
       _Params_()
       {
+        verify = true;
+
         type = CL_DEVICE_TYPE_ALL;
         platformIndex = 0;
         deviceIndex = 0;
@@ -78,6 +85,11 @@ namespace improsa
     int (*m_statusCallback)(const char*, va_list args);
     void reportStatus(const char *format, ...) const;
     virtual bool verify(Image input, Image output, int tolerance=1);
+
+    double m_startTime, m_endTime;
+    bool outputResults(Image input, Image output, const Params& params);
+    void startTiming();
+    void stopTiming();
 
     cl_device_id m_device;
     cl_context m_context;

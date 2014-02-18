@@ -29,22 +29,16 @@ namespace improsa
 
     // Timed runs
     const int iterations = 8;
-    double start = getCurrentTime();
+    startTiming();
     for (int i = 0; i < iterations; i++)
     {
       halide_sobel_cpu(&inputBuffer, &outputBuffer);
     }
-    double end = getCurrentTime();
-
-    // Verification
-    bool passed = verify(input, output);
-    reportStatus(
-      "Finished in %.1lf ms (verification %s)",
-      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
+    stopTiming();
 
     halide_release(NULL);
 
-    return passed;
+    return outputResults(input, output, params);
 #else
     reportStatus("Halide not enabled during build.");
     return false;
@@ -67,25 +61,18 @@ namespace improsa
 
     // Timed runs
     const int iterations = 8;
-    double start = getCurrentTime();
+    startTiming();
     for (int i = 0; i < iterations; i++)
     {
       halide_sobel_gpu(&inputBuffer, &outputBuffer);
     }
     halide_dev_sync(NULL);
-    double end = getCurrentTime();
+    stopTiming();
 
     halide_copy_to_host(NULL, &outputBuffer);
-
-    // Verification
-    bool passed = verify(input, output);
-    reportStatus(
-      "Finished in %.1lf ms (verification %s)",
-      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
-
     halide_release(NULL);
 
-    return passed;
+    return outputResults(input, output, params);
 #else
     reportStatus("Halide not enabled during build.");
     return false;
@@ -139,7 +126,6 @@ namespace improsa
 
     // Timed runs
     int iterations = 8;
-    double start = getCurrentTime();
     for (int i = 0; i < iterations + 1; i++)
     {
       err = clEnqueueNDRangeKernel(
@@ -151,12 +137,12 @@ namespace improsa
       {
         err = clFinish(m_queue);
         CHECK_ERROR_OCL(err, "running kernel", return false);
-        start = getCurrentTime();
+        startTiming();
       }
     }
     err = clFinish(m_queue);
     CHECK_ERROR_OCL(err, "running kernel", return false);
-    double end = getCurrentTime();
+    stopTiming();
 
     reportStatus("Finished OpenCL kernel");
 
@@ -165,17 +151,12 @@ namespace improsa
       origin, region, 0, 0, output.data, 0, NULL, NULL);
     CHECK_ERROR_OCL(err, "reading image data", return false);
 
-    // Verification
-    bool passed = verify(input, output);
-    reportStatus(
-      "Finished in %.1lf ms (verification %s)",
-      (end-start)*1e-3/iterations, passed ? "passed" : "failed");
-
     clReleaseMemObject(d_input);
     clReleaseMemObject(d_output);
     clReleaseKernel(kernel);
     releaseCL();
-    return passed;
+
+    return outputResults(input, output, params);
   }
 
   bool Sobel::runReference(Image input, Image output)

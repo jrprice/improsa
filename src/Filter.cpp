@@ -97,6 +97,30 @@ namespace improsa
     return true;
   }
 
+  bool Filter::outputResults(Image input, Image output, const Params& params)
+  {
+    // Verification
+    bool success = true;
+    const char *verifyStr = "";
+    if (params.verify)
+    {
+      success = verify(input, output);
+      if (success)
+      {
+        verifyStr = "(verification passed)";
+      }
+      else
+      {
+        verifyStr = "(veritication failed)";
+      }
+    }
+
+    double runtime = ((m_endTime-m_startTime)*1e-3)/8; // TODO: iterations
+    reportStatus("Finished in %.1lf ms %s", runtime, verifyStr);
+
+    return success;
+  }
+
   void Filter::releaseCL()
   {
     if (m_program)
@@ -130,6 +154,16 @@ namespace improsa
   void Filter::setStatusCallback(int (*callback)(const char*, va_list args))
   {
     m_statusCallback = callback;
+  }
+
+  void Filter::startTiming()
+  {
+    m_startTime = getCurrentTime();
+  }
+
+  void Filter::stopTiming()
+  {
+    m_endTime = getCurrentTime();
   }
 
   bool Filter::verify(Image input, Image output, int tolerance)
