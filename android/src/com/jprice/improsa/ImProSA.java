@@ -40,6 +40,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   }
   private native void clearReferenceCache();
   private native String[] getFilterList();
+  private native void setVerificationEnabled(boolean enabled);
   private native void setWorkGroupSize(int x, int y);
 
   @Override
@@ -107,6 +108,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     // Check for command-line arguments to auto-run filters
     if (savedInstanceState == null)
     {
+      // Check for optional image selection
       String image = getIntent().getStringExtra("IMAGE");
       if (image != null)
       {
@@ -133,6 +135,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
         }
       }
 
+      // Check for optional work-group size specification
       int[] wgsize = getIntent().getIntArrayExtra("WGSIZE");
       if (wgsize != null)
       {
@@ -144,6 +147,11 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
         setWorkGroupSize(wgsize[0], wgsize[1]);
       }
 
+      // Check for verification flag
+      Log.d(TAG, "Value is " + getIntent().getBooleanExtra("VERIFY", true));
+      setVerificationEnabled(getIntent().getBooleanExtra("VERIFY", true));
+
+      // Filter and method are required
       String filter = getIntent().getStringExtra("FILTER");
       String method = getIntent().getStringExtra("METHOD");
       if (filter != null && method != null)

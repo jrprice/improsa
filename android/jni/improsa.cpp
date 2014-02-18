@@ -57,6 +57,13 @@ extern "C"
   }
 
   JNIEXPORT void JNICALL
+    Java_com_jprice_improsa_ImProSA_setVerificationEnabled(
+      JNIEnv *env, jobject obj, jboolean enabled)
+  {
+    params.verify = enabled;
+  }
+
+  JNIEXPORT void JNICALL
     Java_com_jprice_improsa_ImProSA_setWorkGroupSize(
       JNIEnv *env, jobject obj, jint x, jint y)
   {
