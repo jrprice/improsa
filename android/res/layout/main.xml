@@ -73,30 +73,42 @@
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
       >
-      <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/imageSpinner"
+      <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        />
-      <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/filterSpinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_weight="1"
+        >
+        <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/imageSpinner"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:layout_weight="1"
+          />
+        <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/filterSpinner"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent"
+          android:layout_weight="1"
+          />
+      </LinearLayout>
 
       <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:scaleX="0.85"
-        android:scaleY="0.85"
+        android:layout_weight="1"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
         >
         <LinearLayout
           android:orientation="horizontal"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
+          android:layout_weight="1"
           >
-          <CheckBox android:id="@+id/wgsize"
+          <CheckBox
+            android:id="@+id/wgsize"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="onWGSizeChecked"
@@ -108,8 +120,8 @@
           android:orientation="horizontal"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:scaleX="0.85"
-          android:scaleY="0.85"
+          android:scaleX="0.75"
+          android:scaleY="0.75"
           >
           <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/wgxSpinner"
@@ -133,13 +145,21 @@
             />
         </LinearLayout>
 
-        <CheckBox android:id="@+id/verify"
+        <CheckBox
+            android:id="@+id/verify"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="onVerifyChecked"
             android:text="Verify results"
             android:textSize="12dp"
             />
+
+        <Spinner xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/iterations"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          />
 
       </LinearLayout>
 

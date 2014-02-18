@@ -22,6 +22,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   Spinner filterSpinner, imageSpinner;
   CheckBox verifyCheckBox, wgsizeCheckBox;
   Spinner wgxSpinner, wgySpinner;
+  Spinner iterationsSpinner;
   TextView status;
   int width, height;
   int filterIndex;
@@ -107,6 +108,27 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     verifyCheckBox.setChecked(true);
     setVerificationEnabled(true);
 
+    // Initialize iterations spinner
+    String[] iterValues =
+    {
+      "1 iteration",
+      "2 iterations",
+      "4 iterations",
+      "8 iterations",
+      "16 iterations",
+      "32 iterations",
+      "64 iterations",
+      "128 iterations"
+    };
+    adapter = new ArrayAdapter<String>(
+      this, android.R.layout.simple_spinner_item, iterValues);
+    adapter.setDropDownViewResource(
+      android.R.layout.simple_spinner_dropdown_item);
+    iterationsSpinner = (Spinner)findViewById(R.id.iterations);
+    iterationsSpinner.setAdapter(adapter);
+    iterationsSpinner.setOnItemSelectedListener(this);
+    iterationsSpinner.setSelection(3);
+
     // Initialize status text
     status = (TextView)findViewById(R.id.status);
     status.setText("Ready.");
@@ -158,6 +180,8 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
       if (iterations > 0)
       {
         setIterations(iterations);
+        int pos = 32 - Integer.numberOfLeadingZeros(iterations);
+        iterationsSpinner.setSelection(pos-1);
       }
 
       // Check for verification flag
@@ -267,6 +291,10 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
       setWorkGroupSize(
         (Integer)wgxSpinner.getSelectedItem(),
         (Integer)wgySpinner.getSelectedItem());
+    }
+    else if (parent == iterationsSpinner)
+    {
+      setIterations(position+1);
     }
   }
 
