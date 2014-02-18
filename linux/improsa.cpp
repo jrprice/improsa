@@ -61,6 +61,10 @@ int main(int argc, char *argv[])
     {
       method = Options.methods[argv[i]];
     }
+    else if (!strcmp(argv[i], "-noverify"))
+    {
+      params.verify = false;
+    }
     else if (!strcmp(argv[i], "-cldevice"))
     {
       ++i;
@@ -199,7 +203,9 @@ void clinfo()
 
 void printUsage()
 {
-  cout << endl << "Usage: improsa SIZE FILTER METHOD [-cldevice P:D]";
+  cout << endl <<
+    "Usage: improsa SIZE FILTER METHOD "
+    "[-noverify] [-cldevice P:D]";
   cout << endl << "       improsa -clinfo" << endl;
 
   cout << endl << "Where FILTER is one of:" << endl;
