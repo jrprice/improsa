@@ -133,6 +133,17 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
         }
       }
 
+      int[] wgsize = getIntent().getIntArrayExtra("WGSIZE");
+      if (wgsize != null)
+      {
+        if (wgsize.length != 2)
+        {
+          Log.d(TAG, "Invalid work-group size.");
+          return;
+        }
+        setWorkGroupSize(wgsize[0], wgsize[1]);
+      }
+
       String filter = getIntent().getStringExtra("FILTER");
       String method = getIntent().getStringExtra("METHOD");
       if (filter != null && method != null)
