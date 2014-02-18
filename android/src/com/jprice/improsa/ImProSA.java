@@ -105,50 +105,79 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     status.setText("Ready.");
 
     // Check for command-line arguments to auto-run filters
-    String filter = getIntent().getStringExtra("FILTER");
-    String method = getIntent().getStringExtra("METHOD");
-    if (filter != null && method != null && savedInstanceState == null)
+    if (savedInstanceState == null)
     {
-      // Find filter index
-      filterIndex = -1;
-      for (int i = 0; i < filters.length; i++)
+      String image = getIntent().getStringExtra("IMAGE");
+      if (image != null)
       {
-        if (filters[i].equalsIgnoreCase(filter))
+        if (image.equalsIgnoreCase("peppers"))
         {
-          filterIndex = i;
-          break;
+          loadImage(R.drawable.peppers);
         }
-      }
-
-      if (filterIndex == -1)
-      {
-        Log.d(TAG, "Filter '" + filter + "' not found.");
-        filterIndex = 0;
-      }
-      else
-      {
-        filterSpinner.setSelection(filterIndex);
-
-        // Parse method
-        if (method.equalsIgnoreCase("reference"))
+        else if (image.equalsIgnoreCase("baboon"))
         {
-          run(METHOD_REFERENCE);
+          loadImage(R.drawable.baboon);
         }
-        else if (method.equalsIgnoreCase("halide_cpu"))
+        else if (image.equalsIgnoreCase("lena"))
         {
-          run(METHOD_HALIDE_CPU);
+          loadImage(R.drawable.lena);
         }
-        else if (method.equalsIgnoreCase("halide_gpu"))
+        else if (image.equalsIgnoreCase("doughnuts"))
         {
-          run(METHOD_HALIDE_GPU);
-        }
-        else if (method.equalsIgnoreCase("opencl"))
-        {
-          run(METHOD_OPENCL);
+          loadImage(R.drawable.doughnuts);
         }
         else
         {
-          Log.d(TAG, "Invalid method '" + method + "'.");
+          Log.d(TAG, "Invalid image '" + image + "'.");
+          return;
+        }
+      }
+
+      String filter = getIntent().getStringExtra("FILTER");
+      String method = getIntent().getStringExtra("METHOD");
+      if (filter != null && method != null)
+      {
+        // Find filter index
+        filterIndex = -1;
+        for (int i = 0; i < filters.length; i++)
+        {
+          if (filters[i].equalsIgnoreCase(filter))
+          {
+            filterIndex = i;
+            break;
+          }
+        }
+
+        if (filterIndex == -1)
+        {
+          Log.d(TAG, "Filter '" + filter + "' not found.");
+          filterIndex = 0;
+        }
+        else
+        {
+          filterSpinner.setSelection(filterIndex);
+
+          // Parse method
+          if (method.equalsIgnoreCase("reference"))
+          {
+            run(METHOD_REFERENCE);
+          }
+          else if (method.equalsIgnoreCase("halide_cpu"))
+          {
+            run(METHOD_HALIDE_CPU);
+          }
+          else if (method.equalsIgnoreCase("halide_gpu"))
+          {
+            run(METHOD_HALIDE_GPU);
+          }
+          else if (method.equalsIgnoreCase("opencl"))
+          {
+            run(METHOD_OPENCL);
+          }
+          else
+          {
+            Log.d(TAG, "Invalid method '" + method + "'.");
+          }
         }
       }
     }
