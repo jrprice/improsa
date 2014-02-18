@@ -132,6 +132,15 @@
             android:background="@android:drawable/btn_default"
             />
         </LinearLayout>
+
+        <CheckBox android:id="@+id/verify"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onVerifyChecked"
+            android:text="Verify results"
+            android:textSize="12dp"
+            />
+
       </LinearLayout>
 
     </LinearLayout>

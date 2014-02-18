@@ -20,7 +20,7 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
   Bitmap bmpInput, bmpOutput;
   ImageView imageResult;
   Spinner filterSpinner, imageSpinner;
-  CheckBox wgsizeCheckBox;
+  CheckBox verifyCheckBox, wgsizeCheckBox;
   Spinner wgxSpinner, wgySpinner;
   TextView status;
   int width, height;
@@ -101,6 +101,11 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
     wgsizeCheckBox.setChecked(false);
     setWorkGroupSize(0, 0);
 
+    // Initialize verification checkbox
+    verifyCheckBox = (CheckBox)findViewById(R.id.verify);
+    verifyCheckBox.setChecked(true);
+    setVerificationEnabled(true);
+
     // Initialize status text
     status = (TextView)findViewById(R.id.status);
     status.setText("Ready.");
@@ -148,8 +153,9 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
       }
 
       // Check for verification flag
-      Log.d(TAG, "Value is " + getIntent().getBooleanExtra("VERIFY", true));
-      setVerificationEnabled(getIntent().getBooleanExtra("VERIFY", true));
+      boolean verify = getIntent().getBooleanExtra("VERIFY", true);
+      verifyCheckBox.setChecked(verify);
+      setVerificationEnabled(verify);
 
       // Filter and method are required
       String filter = getIntent().getStringExtra("FILTER");
@@ -286,6 +292,11 @@ public class ImProSA extends Activity implements Spinner.OnItemSelectedListener
       default:
         return;
     }
+  }
+
+  public void onVerifyChecked(View view)
+  {
+    setVerificationEnabled(verifyCheckBox.isChecked());
   }
 
   public void onWGSizeChecked(View view)
