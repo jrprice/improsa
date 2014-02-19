@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   // Schedules
   if (!strcmp(argv[1], "cpu"))
   {
-    bilateral.parallel(y);
+    bilateral.parallel(y).vectorize(c, 4);
   }
   else if (!strcmp(argv[1], "gpu"))
   {
