@@ -136,6 +136,9 @@ extern "C"
     AndroidBitmap_lockPixels(env, bmpInput, (void**)&input.data);
     AndroidBitmap_lockPixels(env, bmpOutput, (void**)&output.data);
 
+    // Force use of GPU for Halide pipelines
+    setenv("HL_OCL_DEVICE", "gpu", 1);
+
     // Run filter method
     jboolean success = false;
     Filter *filter = filters[filterIndex];
@@ -149,7 +152,6 @@ extern "C"
         success = filter->runHalideCPU(input, output, params);
         break;
       case METHOD_HALIDE_GPU:
-        setenv("HL_OCL_DEVICE", "gpu", 1);
         success = filter->runHalideGPU(input, output, params);
         break;
       case METHOD_OPENCL:
