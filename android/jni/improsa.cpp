@@ -149,6 +149,7 @@ extern "C"
         success = filter->runHalideCPU(input, output, params);
         break;
       case METHOD_HALIDE_GPU:
+        setenv("HL_OCL_DEVICE", "gpu", 1);
         success = filter->runHalideGPU(input, output, params);
         break;
       case METHOD_OPENCL:
