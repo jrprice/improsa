@@ -124,12 +124,6 @@
         <exec executable="ndk-build" failonerror="true" dir="jni">
             <arg value="clean"/>
         </exec>
-        <exec
-            executable="./gen_filters.sh"
-            dir="../src/halide"
-            failonerror="true">
-            <arg value="clean"/>
-        </exec>
         <delete dir="jni/halide/"/>
         <delete>
             <fileset dir="../src/opencl/" includes="*.h"/>

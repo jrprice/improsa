@@ -2,15 +2,6 @@
 
 functions="bilateral blur sharpen sobel"
 
-if [ "$1" == clean ]
-then
-  for name in $functions
-  do
-    rm -rf "$name"{,_cpu{.s,.h},_gpu{.s,.h}}
-  done
-  exit 0
-fi
-
 OUTDIR=${1:-.}
 mkdir -p $OUTDIR
 
