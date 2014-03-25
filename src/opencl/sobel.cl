@@ -1,3 +1,11 @@
+// sobel.cl (ImProSA)
+// Copyright (c) 2014, James Price and Simon McIntosh-Smith,
+// University of Bristol. All rights reserved.
+//
+// This program is provided under a three-clause BSD license. For full
+// license terms please see the LICENSE file distributed with this
+// source code.
+
 const sampler_t sampler =
   CLK_NORMALIZED_COORDS_FALSE |
   CLK_ADDRESS_CLAMP_TO_EDGE   |
