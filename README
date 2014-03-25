@@ -1,0 +1,12 @@
+=======
+ImProSA
+=======
+
+About
+-----
+ImProSA (Image Processing Sandbox Application) is a small set of
+benchmarks for exploring GPGPU computation on mobile devices. The
+benchmarks include a few simple filters: box blur, sharpen, sobel
+and bilateral. These filters have been implemented in OpenCL, and also
+using Halide (targeting both CPU and GPU). Frontends for both Android
+and Linux are provided.
