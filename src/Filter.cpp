@@ -124,7 +124,8 @@ namespace improsa
     }
 
     double runtime = ((m_endTime-m_startTime)*1e-3)/params.iterations;
-    reportStatus("Finished in %.1lf ms %s", runtime, verifyStr);
+    int dp = 1 - floor(log10(runtime)); // 2 significant figures
+    reportStatus("Finished in %.*lf ms %s", runtime, dp, verifyStr);
 
     return success;
   }
