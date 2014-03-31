@@ -90,6 +90,29 @@ int main(int argc, char *argv[])
     {
       params.verify = false;
     }
+    else if (!strcmp(argv[i], "-clwgsize"))
+    {
+      ++i;
+      if (i >= argc)
+      {
+        cout << "Work-group size required with -clwgsize." << endl;
+        exit(1);
+      }
+
+      char *next;
+      params.wgsize[0] = strtoul(argv[i], &next, 10);
+      if (strlen(next) == 0 || next[0] != ',')
+      {
+        cout << "Invalid work-group size." << endl;
+        exit(1);
+      }
+      params.wgsize[1] = strtoul(++next, &next, 10);
+      if (strlen(next) != 0)
+      {
+        cout << "Invalid work-group size." << endl;
+        exit(1);
+      }
+    }
     else if (!strcmp(argv[i], "-cldevice"))
     {
       ++i;
@@ -230,7 +253,7 @@ void printUsage()
 {
   cout << endl <<
     "Usage: improsa SIZE FILTER METHOD "
-    "[-i ITERATIONS] [-noverify] [-cldevice P:D]";
+    "[-i ITERATIONS] [-noverify] [-cldevice P:D] [-clwgsize X,Y]";
   cout << endl << "       improsa -clinfo" << endl;
 
   cout << endl << "Where FILTER is one of:" << endl;
