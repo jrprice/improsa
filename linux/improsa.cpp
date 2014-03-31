@@ -251,9 +251,7 @@ void clinfo()
 
 void printUsage()
 {
-  cout << endl <<
-    "Usage: improsa SIZE FILTER METHOD "
-    "[-i ITERATIONS] [-noverify] [-cldevice P:D] [-clwgsize X,Y]";
+  cout << endl << "Usage: improsa SIZE FILTER METHOD [OPTIONS]";
   cout << endl << "       improsa -clinfo" << endl;
 
   cout << endl << "Where FILTER is one of:" << endl;
@@ -270,10 +268,16 @@ void printUsage()
     cout << "\t" << mItr->first << endl;
   }
 
+  cout << endl << "Where OPTIONS can be any of:" << endl;
+  cout << "\t-cldevice P:D    Select OpenCL platform/device" << endl;
+  cout << "\t-clwgsize X,Y    Specify work-group size" << endl;
+  cout << "\t-i ITERATIONS    Number of runs to perform" << endl;
+  cout << "\t-noverify        Disable results verification" << endl;
+
   cout << endl
     << "If specifying an OpenCL device with -cldevice, " << endl
     << "P and D correspond to the platform and device " << endl
-    << "indices reported by running -clinfo."
+    << "indices reported by running with -clinfo."
     << endl;
 
   cout << endl;
