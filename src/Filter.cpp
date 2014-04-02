@@ -119,7 +119,7 @@ namespace improsa
       }
       else
       {
-        verifyStr = "(veritication failed)";
+        verifyStr = "(verification failed)";
       }
     }
 
