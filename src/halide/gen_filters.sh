@@ -23,7 +23,7 @@ do
   fi
   echo "Generating halide $name functions"
 
-  g++ -lHalide -o $name $name.cpp
+  g++ -o $name $name.cpp -lHalide
   if [ $? -ne 0 ]
   then
     exit 1
