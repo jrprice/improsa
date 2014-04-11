@@ -8,6 +8,7 @@
 
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <sys/time.h>
 
 #include "Filter.h"
@@ -123,9 +124,16 @@ namespace improsa
       }
     }
 
+    // Compute average runtime
     double runtime = ((m_endTime-m_startTime)*1e-3)/params.iterations;
-    int dp = 1 - floor(log10(runtime)); // 2 significant figures
-    reportStatus("Finished in %.*lf ms %s", runtime, dp<0 ? 0 : dp, verifyStr);
+
+    // Find required DP for 2 significant figures
+    int dp = 1 - floor(log10(runtime));
+
+    // Output timing
+    char fmt[32];
+    sprintf(fmt, "Finished in %%.%dlf ms %%s", dp<0 ? 0 : dp);
+    reportStatus(fmt, runtime, verifyStr);
 
     return success;
   }
