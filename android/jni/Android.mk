@@ -19,6 +19,7 @@ LOCAL_SRC_FILES := improsa.cpp \
 	$(SRC_PATH)/Filter.cpp \
 	$(SRC_PATH)/Bilateral.cpp \
 	$(SRC_PATH)/Blur.cpp \
+	$(SRC_PATH)/Copy.cpp \
 	$(SRC_PATH)/Sharpen.cpp \
 	$(SRC_PATH)/Sobel.cpp
 
