@@ -36,7 +36,7 @@ namespace improsa
     cl_int err;
 
     char options[64];
-    sprintf(options, "-cl-fast-relaxed-math -DWIDTH=%lu -DHEIGHT=%lu",
+    sprintf(options, "-cl-fast-relaxed-math -DWIDTH=%zu -DHEIGHT=%zu",
             input.width, input.height);
     if (!initCL(params, copy_kernel, options))
     {
@@ -64,6 +64,9 @@ namespace improsa
     {
       numImages = maxImages;
     }
+
+    double peakBandwidth = 0;
+    const char *peakKernel = NULL;
 
     for (int k = 0; k < numKernels; k++)
     {
@@ -209,11 +212,20 @@ namespace improsa
                    verify(input, output) ? "passed" : "failed",
                    meanBandwidth);
 
+      if (maxBandwidth > peakBandwidth)
+      {
+        peakBandwidth = maxBandwidth;
+        peakKernel = kernels[k];
+      }
+
       clReleaseMemObject(d_input);
       clReleaseMemObject(d_output);
       clReleaseKernel(kernel);
       delete[] local;
     }
+
+    reportStatus("Peak bandwidth was %.1lf GB/s with %s kernel",
+                 peakBandwidth, peakKernel);
 
     releaseCL();
 
