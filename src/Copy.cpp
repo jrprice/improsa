@@ -6,6 +6,7 @@
 // license terms please see the LICENSE file distributed with this
 // source code.
 
+#include <cstdio>
 #include <string.h>
 
 #include "Copy.h"
@@ -32,7 +33,12 @@ namespace improsa
 
   bool Copy::runOpenCL(Image input, Image output, const Params& params)
   {
-    if (!initCL(params, copy_kernel, "-cl-fast-relaxed-math"))
+    cl_int err;
+
+    char options[64];
+    sprintf(options, "-cl-fast-relaxed-math -DWIDTH=%lu -DHEIGHT=%lu",
+            input.width, input.height);
+    if (!initCL(params, copy_kernel, options))
     {
       return false;
     }
@@ -45,13 +51,25 @@ namespace improsa
     };
     size_t numKernels = sizeof(kernels)/sizeof(const char*);
 
+    // Get maximum memory allocation size
+    cl_ulong maxAlloc;
+    err = clGetDeviceInfo(m_device, CL_DEVICE_MAX_MEM_ALLOC_SIZE,
+                          sizeof(cl_ulong), &maxAlloc, NULL);
+    CHECK_ERROR_OCL(err, "getting max memory allocation size", return false;);
+
+    // Compute maximum number of images we can allocate
+    int numImages = params.iterations + 1;
+    size_t maxImages = floor((maxAlloc / (double)(input.width*input.height*4)));
+    if (params.iterations+1 > maxImages)
+    {
+      numImages = maxImages;
+    }
+
     for (int k = 0; k < numKernels; k++)
     {
-      cl_int err;
       cl_kernel kernel;
       cl_mem d_input, d_output;
       bool images = !strncmp(kernels[k], "image", 5);
-      cl_image_format format = {CL_RGBA, CL_UNORM_INT8};
       size_t origin[3] = {0, 0, 0};
       size_t region[3] = {input.width, input.height, 1};
 
@@ -60,9 +78,15 @@ namespace improsa
 
       if (images)
       {
-        d_input = clCreateImage2D(
+        cl_image_format format =
+        {
+          CL_RGBA,
+          k==1 ? CL_UNORM_INT8 : CL_UNSIGNED_INT8
+        };
+
+        d_input = clCreateImage3D(
           m_context, CL_MEM_READ_ONLY, &format,
-          input.width, input.height, 0, NULL, &err);
+          input.width, input.height, numImages, 0, 0, NULL, &err);
         CHECK_ERROR_OCL(err, "creating input image", return false);
 
         d_output = clCreateImage2D(
@@ -70,16 +94,21 @@ namespace improsa
           output.width, output.height, 0, NULL, &err);
         CHECK_ERROR_OCL(err, "creating output image", return false);
 
-        err = clEnqueueWriteImage(
-          m_queue, d_input, CL_TRUE,
-          origin, region, 0, 0, input.data, 0, NULL, NULL);
-        CHECK_ERROR_OCL(err, "writing image data", return false);
+        for (int i = 0; i < numImages; i++)
+        {
+          origin[2] = i;
+          err = clEnqueueWriteImage(
+            m_queue, d_input, CL_TRUE,
+            origin, region, 0, 0, input.data, 0, NULL, NULL);
+          CHECK_ERROR_OCL(err, "writing image data", return false);
+        }
+        origin[2] = 0;
       }
       else
       {
         d_input = clCreateBuffer(
           m_context, CL_MEM_READ_ONLY,
-          input.width*input.height*4, NULL, &err);
+          input.width*input.height*4*numImages, NULL, &err);
         CHECK_ERROR_OCL(err, "creating input buffer", return false)
 
         d_output = clCreateBuffer(
@@ -87,28 +116,36 @@ namespace improsa
           output.width*output.height*4, NULL, &err);
         CHECK_ERROR_OCL(err, "creating output buffer", return false)
 
-        err = clEnqueueWriteBuffer(
-          m_queue, d_input, CL_TRUE, 0, input.width*input.height*4,
-          input.data, 0, NULL, NULL);
-        CHECK_ERROR_OCL(err, "writing buffer data", return false);
+        for (int i = 0; i < numImages; i++)
+        {
+          size_t offset = i*input.width*input.height*4;
+          err = clEnqueueWriteBuffer(
+            m_queue, d_input, CL_TRUE, offset, input.width*input.height*4,
+            input.data, 0, NULL, NULL);
+          CHECK_ERROR_OCL(err, "writing buffer data", return false);
+        }
       }
 
       err  = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_input);
       err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_output);
       CHECK_ERROR_OCL(err, "setting kernel arguments", return false);
 
-      const size_t global[2] = {output.width, output.height};
-      const size_t *local = NULL;
+      const size_t global[3] = {output.width, output.height, 1};
+      size_t *local = NULL;
       if (params.wgsize[0] && params.wgsize[1])
       {
-        local = params.wgsize;
+        local = new size_t[3];
+        local[0] = params.wgsize[0];
+        local[1] = params.wgsize[1];
+        local[2] = 1;
       }
 
       // Timed runs
       for (int i = 0; i < params.iterations + 1; i++)
       {
+        size_t offset[3] = {0, 0, i % numImages};
         err = clEnqueueNDRangeKernel(
-          m_queue, kernel, 2, NULL, global, local, 0, NULL, NULL);
+          m_queue, kernel, 3, offset, global, local, 0, NULL, NULL);
         CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
 
         // Start timing after warm-up run
@@ -148,6 +185,7 @@ namespace improsa
       clReleaseMemObject(d_input);
       clReleaseMemObject(d_output);
       clReleaseKernel(kernel);
+      delete[] local;
     }
 
     releaseCL();

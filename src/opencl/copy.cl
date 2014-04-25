@@ -14,22 +14,23 @@ const sampler_t sampler =
 kernel void buffer(global uchar4 *input,
                    global uchar4 *output)
 {
-  size_t pixel = get_global_id(0) + get_global_id(1) * get_global_size(0);
-  output[pixel] = input[pixel];
+  size_t pixel = get_global_id(0) + get_global_id(1)*WIDTH;
+  uchar4 value = input[pixel + get_global_id(2)*WIDTH*HEIGHT];
+  output[pixel] = value;
 }
 
-kernel void image_float(read_only image2d_t input,
+kernel void image_float(read_only image3d_t input,
                         write_only image2d_t output)
 {
-  int2 pixel = (int2)(get_global_id(0), get_global_id(1));
+  int4 pixel = (int4)(get_global_id(0), get_global_id(1), get_global_id(2), 1);
   float4 value = read_imagef(input, sampler, pixel);
-  write_imagef(output, pixel, value);
+  write_imagef(output, pixel.xy, value);
 }
 
-kernel void image_int(read_only image2d_t input,
+kernel void image_int(read_only image3d_t input,
                       write_only image2d_t output)
 {
-  int2 pixel = (int2)(get_global_id(0), get_global_id(1));
+  int4 pixel = (int4)(get_global_id(0), get_global_id(1), get_global_id(2), 1);
   uint4 value = read_imageui(input, sampler, pixel);
-  write_imageui(output, pixel, value);
+  write_imageui(output, pixel.xy, value);
 }
