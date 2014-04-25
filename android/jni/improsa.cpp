@@ -14,6 +14,7 @@
 
 #include "Bilateral.h"
 #include "Blur.h"
+#include "Copy.h"
 #include "Sharpen.h"
 #include "Sobel.h"
 
@@ -28,6 +29,7 @@ extern "C"
 {
   static Filter *filters[] =
   {
+    new Copy(),
     new Bilateral(),
     new Blur(),
     new Sharpen(),

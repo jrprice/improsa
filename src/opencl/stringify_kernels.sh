@@ -8,7 +8,7 @@
 # license terms please see the LICENSE file distributed with this
 # source code.
 
-kernels="bilateral blur sharpen sobel"
+kernels="bilateral blur copy sharpen sobel"
 
 for name in $kernels
 do

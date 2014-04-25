@@ -82,7 +82,8 @@ namespace improsa
     m_context = clCreateContext(NULL, 1, &m_device, NULL, NULL, &err);
     CHECK_ERROR_OCL(err, "creating context", return false);
 
-    m_queue = clCreateCommandQueue(m_context, m_device, 0, &err);
+    m_queue = clCreateCommandQueue(m_context, m_device,
+                                   CL_QUEUE_PROFILING_ENABLE, &err);
     CHECK_ERROR_OCL(err, "creating command queue", return false);
 
     m_program = clCreateProgramWithSource(m_context, 1, &source, NULL, &err);

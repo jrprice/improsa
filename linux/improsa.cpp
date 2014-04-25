@@ -15,6 +15,7 @@
 
 #include "Bilateral.h"
 #include "Blur.h"
+#include "Copy.h"
 #include "Sharpen.h"
 #include "Sobel.h"
 
@@ -34,6 +35,7 @@ struct _options_
   {
     filters["bilateral"] = new Bilateral();
     filters["blur"] = new Blur();
+    filters["copy"] = new Copy();
     filters["sharpen"] = new Sharpen();
     filters["sobel"] = new Sobel();
 
