@@ -141,11 +141,12 @@ namespace improsa
       }
 
       // Timed runs
+      cl_event *events = new cl_event[params.iterations+1];
       for (int i = 0; i < params.iterations + 1; i++)
       {
         size_t offset[3] = {0, 0, i % numImages};
         err = clEnqueueNDRangeKernel(
-          m_queue, kernel, 3, offset, global, local, 0, NULL, NULL);
+          m_queue, kernel, 3, offset, global, local, 0, NULL, events+i);
         CHECK_ERROR_OCL(err, "enqueuing kernel", return false);
 
         // Start timing after warm-up run
@@ -175,12 +176,38 @@ namespace improsa
         CHECK_ERROR_OCL(err, "writing buffer data", return false);
       }
 
+      // Compute average bandwidth
       double totalBytes = input.width*input.height*4*2*params.iterations;
-      double seconds = ((m_endTime-m_startTime)*1e-6);
-      double bandwidth = (totalBytes/seconds)*1e-9;
-      reportStatus("%12s: %.1lf GB/s (%s)",
-                   kernels[k], bandwidth,
-                   verify(input, output) ? "passed" : "failed");
+      double seconds = (m_endTime-m_startTime)*1e-6;
+      double meanBandwidth = (totalBytes/seconds)*1e-9;
+
+      // Compute max bandwidth
+      cl_ulong start, end;
+      double bytes = input.width*input.height*4*2;
+      double maxBandwidth = meanBandwidth;
+      for (int i = 0; i < params.iterations+1; i++)
+      {
+        err  = clGetEventProfilingInfo(events[i], CL_PROFILING_COMMAND_START,
+                                       sizeof(cl_ulong), &start, NULL);
+        err |= clGetEventProfilingInfo(events[i], CL_PROFILING_COMMAND_END,
+                                       sizeof(cl_ulong), &end, NULL);
+        CHECK_ERROR_OCL(err, "getting event profiling info", return false);
+
+        seconds = (end-start)*1e-9;
+        double bandwidth = (bytes/seconds)*1e-9;
+        if (bandwidth > maxBandwidth)
+        {
+          maxBandwidth = bandwidth;
+        }
+
+        clReleaseEvent(events[i]);
+      }
+      delete[] events;
+
+      reportStatus("%12s: max %.1lf GB/s (%s, average %.1lf GB/s)",
+                   kernels[k], maxBandwidth,
+                   verify(input, output) ? "passed" : "failed",
+                   meanBandwidth);
 
       clReleaseMemObject(d_input);
       clReleaseMemObject(d_output);
